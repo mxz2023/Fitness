@@ -1,0 +1,14 @@
+{
+  "routerMap": [
+    {
+      "name" : "history",
+      "pageSourceFile"  : "src/main/ets/pages/HealthHistoryPage.ets",
+      "buildFunction" : "PageBuilder"
+    },
+    {
+      "name" : "knowledge",
+      "pageSourceFile"  : "src/main/ets/pages/KnowledgePage.ets",
+      "buildFunction" : "PageBuilder"
+    }
+  ]
+}

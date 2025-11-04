@@ -1,0 +1,14 @@
+{
+  "name": "@mxz/fitness",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "Index.ets",
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@mxz/component": "file:../../../Modules/Component/component",
+    "@mxz/logger": "file:../../../Modules/Logger/logger",
+    "class-transformer": "0.5.1",
+    "reflect-metadata": "0.2.1"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "module": {
+    "name": "fitness",
+    "type": "har",
+    "deviceTypes": [
+      "default"
+    ]
+  }
+}
