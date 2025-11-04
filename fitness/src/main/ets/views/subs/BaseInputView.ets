@@ -2,9 +2,10 @@
  * 基本信息输入（Figma 48_31 对齐实现）
  * 灰背景(参考 310x621)、居中白色卡片(265x345, 圆角5)、底部绿色胶囊按钮(224x28)
  */
-import { MLable, MButton, MRadio, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
+import { MButton, MRadio, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
 import { UserDataModel, Gender } from "../../models/UserDataModel";
 import { UnitConstants } from '../../common/HealthTypeDefine';
+import { FLable as MLable } from '../../components/FLable'
 
 
 @Preview
@@ -201,7 +202,6 @@ export struct BaseInputView {
       maxWidth: 500
     })
     .padding(AppConstants.VIEW_PADDING)
-    .backgroundColor(ColorConstants.View_Background_Color)
     .borderRadius(AppConstants.VIEW_RADIUS)
   }
 }

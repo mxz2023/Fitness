@@ -8,7 +8,8 @@
  * @desc
  */
 
-import { MLable, MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component"
+import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component"
+import { FLable as MLable } from '../../components/FLable'
 
 import { UricAcidData } from "../../models/HealthDataModel"
 import { Gender } from "../../models/UserDataModel"
@@ -117,11 +118,10 @@ export struct UricAcidInputView {
     }
     .width('100%')
     .height('100%')
-    .padding(AppConstants.VIEW_PADDING)
     .constraintSize({
       maxWidth: 500
     })
-    .backgroundColor(ColorConstants.View_Background_Color)
+    .padding(AppConstants.VIEW_PADDING)
     .borderRadius(AppConstants.VIEW_RADIUS)
   }
 }

@@ -8,7 +8,8 @@
  * @desc
  */
 
-import { MLable, MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
+import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
+import { FLable as MLable } from '../../components/FLable'
 
 import { BloodPressureData } from "../../models/HealthDataModel";
 import { UnitConstants } from '../../common/HealthTypeDefine';
@@ -125,7 +126,6 @@ export struct BloodPressureInputView {
       maxWidth: 500
     })
     .padding(AppConstants.VIEW_PADDING)
-    .backgroundColor(ColorConstants.View_Background_Color)
     .borderRadius(AppConstants.VIEW_RADIUS)
   }
 }
