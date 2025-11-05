@@ -2,7 +2,7 @@
  * 尿酸健康评估ViewModel
  */
 
-import { logger } from '@mxz/logger';
+import { logger } from '@mxz/common'
 
 import { HealthStatus, HealthRanges, UricAcidData, HealthData } from '../models/HealthDataModel';
 import { BaseHealthViewModel } from './BaseHealthViewModel';

@@ -5,7 +5,7 @@
 
 import { Context } from '@ohos.abilityAccessCtrl';
 
-import { logger } from '@mxz/logger';
+import { logger } from '@mxz/common'
 
 import { UserDataModel, Gender } from '../models/UserDataModel';
 import { UserDataServiceImpl } from '../models/UserDataServiceImpl';

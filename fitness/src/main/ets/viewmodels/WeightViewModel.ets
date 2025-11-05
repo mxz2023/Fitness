@@ -2,7 +2,7 @@
  * 体重健康评估ViewModel
  */
 
-import { logger } from '@mxz/logger';
+import { logger } from '@mxz/common'
 
 import { HealthStatus, HealthRanges, WeightData, HealthData } from '../models/HealthDataModel';
 import { BaseHealthViewModel } from './BaseHealthViewModel';

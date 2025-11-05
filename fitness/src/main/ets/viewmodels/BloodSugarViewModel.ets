@@ -2,7 +2,7 @@
  * 血糖健康评估ViewModel
  */
 
-import { logger } from '@mxz/logger';
+import { logger } from '@mxz/common'
 
 import { HealthStatus, HealthRanges, BloodSugarData, MeasurementType, HealthData } from '../models/HealthDataModel';
 import { BaseHealthViewModel } from './BaseHealthViewModel';

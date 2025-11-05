@@ -4,7 +4,7 @@
  */
 import { Context } from '@ohos.abilityAccessCtrl';
 
-import { logger } from '@mxz/logger';
+import { logger } from '@mxz/common'
 
 import { HealthStatus, HealthData } from '../models/HealthDataModel';
 import { HealthViewModel } from './HealthViewModel';

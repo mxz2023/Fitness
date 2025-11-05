@@ -6,7 +6,7 @@
 import { preferences } from '@kit.ArkData';
 import { Context } from '@ohos.abilityAccessCtrl';
 
-import { logger } from '@mxz/logger';
+import { logger } from '@mxz/common'
 
 import { UserDataModel, Gender } from './UserDataModel';
 
