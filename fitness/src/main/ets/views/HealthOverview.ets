@@ -4,7 +4,17 @@
  */
 import { KeyboardAvoidMode } from '@kit.ArkUI';
 
-import { MIconButton, MDashBoardStyle, AppConstants, ColorConstants, showToast, getAppPathStack } from '@mxz/component';
+import {
+  MIconButton,
+  MDashBoardStyle,
+  AppConstants,
+  ColorConstants,
+  showToast,
+  getAppPathStack,
+  NavigationTitleBuilder,
+  FontSizeConstants
+} from '@mxz/component';
+import { MRouter } from '@mxz/router';
 
 import { BaseInputView } from './subs/BaseInputView';
 import { WeightInputView } from './subs/WeightInputView';
@@ -36,7 +46,6 @@ import { UserInfoCard } from './UserInfoCard';
 import { UnitConstants } from '../common/HealthTypeDefine';
 
 
-const TAG = "HealthOverview"
 
 interface ToolItem {
   name: ResourceStr,
@@ -45,8 +54,36 @@ interface ToolItem {
   handleClick: Function
 }
 
+@ComponentV2
+export struct HealthPage {
+  private pageInfos: NavPathStack = MRouter.getInstance().getNavStack();
 
-@Preview
+  build() {
+    RelativeContainer() {
+      NavigationTitleBuilder(this.pageInfos, {
+        title: {
+          text: "叶记健康",
+          fontSize: FontSizeConstants.LargeTitle,
+          fontWeight: FontWeight.Medium
+        },
+        height: AppConstants.NAV_HEIGHT
+      })
+      Column() {
+        HealthOverview()
+      }
+      .alignRules({
+        top: { anchor: '__container__', align: VerticalAlign.Top },
+        bottom: { anchor: '__container__', align: VerticalAlign.Bottom },
+        left: { anchor: '__container__', align: HorizontalAlign.Start },
+        right: { anchor: '__container__', align: HorizontalAlign.End }
+      })
+      .margin({
+        top: AppConstants.NAV_HEIGHT
+      })
+    }
+  }
+}
+
 @ComponentV2
 export struct HealthOverview {
   @Local private showType: HealthCardDataType = HealthCardDataType.Unknown;

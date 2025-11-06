@@ -1,1 +1,1 @@
-export { HealthOverview } from './src/main/ets/views/HealthOverview';
+export { HealthPage, HealthOverview } from './src/main/ets/views/HealthOverview';

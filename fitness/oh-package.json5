@@ -8,6 +8,7 @@
   "dependencies": {
     "@mxz/component": "file:../../../Modules/component",
     "@mxz/common": "file:../../../Modules/common",
+    "@mxz/router": "file:../../../Modules/router",
     "class-transformer": "0.5.1",
     "reflect-metadata": "0.2.1"
   }
