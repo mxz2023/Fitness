@@ -1,72 +1,83 @@
 /**
  * Copyright (c) 2023-2025 Mxz Co., Ltd.
  *
- * @file WeightInputView.ets
+ * @file BloodPressureInputView.ets
  * @project FitnessTracker
  * @author vincent_gemini
  * @crateTime 2025-10-04
  * @desc
  */
 
-import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component"
-import { FLabel as MLabel } from '../../components/FLabel'
+import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
+import { FLabel as MLabel } from '../components/FLabel'
 
-import { WeightData } from "../../models/HealthDataModel";
-import { UnitConstants } from '../../common/HealthTypeDefine';
+import { BloodPressureData } from "../models/HealthDataModel";
+import { UnitConstants } from '../common/HealthTypeDefine';
 
 
-@ComponentV2
-export struct WeightInputView {
-  @Event onSubmit: (data?: WeightData) => void
-  @Param @Require weightKg: number;
-  // 本地状态
-  @Local weightInputText: string = "";
+@CustomDialog
+export struct BloodPressureInputDialog {
+  controller: CustomDialogController
+  onSubmit?: (data?: BloodPressureData) => void;
+
+  @Prop @Require systolicValue: number;
+  @Prop @Require diastolicValue: number;
 
   aboutToAppear(): void {
-    // 使用外部传入的 weightKg 初始化输入框文本
-    this.weightInputText = `${this.weightKg}`;
+
   }
 
   private async saveData() {
-    const value = parseFloat(this.weightInputText)
-    if (isNaN(value) || value <= 0 ) {
-      return
-    }
-
     const now = Date.now();
-    const record = new WeightData();
-    record.id = `weight_${now}`;
+    const record = new BloodPressureData();
+    record.id = `bloodPressure_${now}`;
     record.timestamp = now;
-    record.value = Number(this.weightInputText) || 0;
+    record.systolic = this.systolicValue;
+    record.diastolic = this.diastolicValue;
     record.note = '';
-    this.onSubmit(record);
+    if (this.onSubmit) {
+      this.onSubmit(record);
+    }
+    this.controller.close();
   }
 
   @Builder
   contentBuilder() {
     Column({ space: 4 }) {
-
       Row({ space: 4 }) {
-        MLabel({ Label: "体重:" })
+        MLabel({ Label: "收缩压:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
-          text: this.weightInputText,
+          text: `${this.systolicValue}`,
           onText: (v: string) => {
-            // 数字与小数点输入校验，最多两位小数
-            let res: string = v ?? '';
-            if (!/^\d*\.?\d*$/.test(res)) {
-              return;
+            const value = parseFloat(v)
+            if (isNaN(value) || value <= 0) {
+              return
             }
-            const parts: string[] = res.split('.');
-            if (parts.length > 1 && parts[1].length > 2) {
-              res = `${parts[0]}.${parts[1].substring(0, 2)}`;
-            }
-            this.weightInputText = res;
+            this.systolicValue = value
           }
         }).layoutWeight(1)
 
-        MLabel({ Label: UnitConstants.WEIGHT_UNIT })
+        MLabel({ Label: UnitConstants.BLOOD_PRESSURE_UNIT })
+      }
+
+      Row({ space: 4 }) {
+        MLabel({ Label: "舒张压:" })
+
+        MTextInput({
+          type: InputType.NUMBER_DECIMAL,
+          text: `${this.diastolicValue}`,
+          onText: (v: string) => {
+            const value = parseFloat(v)
+            if (isNaN(value) || value <= 0) {
+              return
+            }
+            this.diastolicValue = value
+          }
+        }).layoutWeight(1)
+
+        MLabel({ Label: UnitConstants.BLOOD_PRESSURE_UNIT })
       }
     }
   }
@@ -75,9 +86,12 @@ export struct WeightInputView {
     RelativeContainer() {
       MTitleBar({
         style: 1,
-        title: "体重信息",
+        title: "血压信息",
         handleBack: () => {
-          this.onSubmit()
+          if (this.onSubmit) {
+            this.onSubmit()
+          }
+          this.controller.close();
         }
       }).alignRules({
         top: { anchor: '__container__', align: VerticalAlign.Top },

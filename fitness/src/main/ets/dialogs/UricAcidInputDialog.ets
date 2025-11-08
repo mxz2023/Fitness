@@ -1,80 +1,78 @@
 /**
  * Copyright (c) 2023-2025 Mxz Co., Ltd.
  *
- * @file BloodPressureInputView.ets
+ * @file UricAcidInputView.ets
  * @project FitnessTracker
  * @author vincent_gemini
  * @crateTime 2025-10-04
  * @desc
  */
 
-import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
-import { FLabel as MLabel } from '../../components/FLabel'
+import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component"
+import { FLabel as MLabel } from '../components/FLabel'
 
-import { BloodPressureData } from "../../models/HealthDataModel";
-import { UnitConstants } from '../../common/HealthTypeDefine';
+import { UricAcidData } from "../models/HealthDataModel"
+import { Gender } from "../models/UserDataModel"
+import { UnitConstants } from '../common/HealthTypeDefine';
 
 
-@ComponentV2
-export struct BloodPressureInputView {
-  @Event onSubmit: (data?: BloodPressureData) => void;
-  @Param @Require systolicValue: number;
-  @Param @Require diastolicValue: number;
-  // 本地状态
-  @Local private systolicText: string = "";
-  @Local private diastolicText: string = "";
+@CustomDialog
+export struct UricAcidInputDialog {
+  controller: CustomDialogController
+  onSubmit?: (data?: UricAcidData) => void;
+
+  @Prop @Require inputValue: number;
+  @Prop @Require gender: Gender;
+  @State inputNote: string = '';
 
   aboutToAppear(): void {
-    this.systolicText = `${this.systolicValue}`;
-    this.diastolicText = `${this.diastolicValue}`;
+
   }
 
-  private async saveData() {
-    const systolicValue = parseFloat(this.systolicText)
-    const diastolicValue = parseFloat(this.diastolicText)
-    if (isNaN(systolicValue) || systolicValue <= 0 || isNaN(diastolicValue) || diastolicValue <= 0) {
-      return
+  async saveData() {
+    const record: UricAcidData = {
+      id: `uricAcid_${Date.now()}`,
+      timestamp: Date.now(),
+      value:  this.inputValue,
+      gender: this.gender ?? Gender.UNKNOWN,
+      note: this.inputNote || ''
     }
-
-    const now = Date.now();
-    const record = new BloodPressureData();
-    record.id = `bloodPressure_${now}`;
-    record.timestamp = now;
-    record.systolic = systolicValue;
-    record.diastolic = diastolicValue;
-    record.note = '';
-    this.onSubmit(record);
+    if (this.onSubmit) {
+      this.onSubmit(record);
+    }
   }
 
   @Builder
   contentBuilder() {
     Column({ space: 4 }) {
       Row({ space: 4 }) {
-        MLabel({ Label: "收缩压:" })
+        MLabel({ Label: "尿酸:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
-          text: this.systolicText,
+          text:  `${this.inputValue}`,
           onText: (v: string) => {
-            this.systolicText = v
+            const value = parseFloat(v)
+            if (isNaN(value) || value <= 0) {
+              return
+            }
+            this.inputValue = value;
           }
         }).layoutWeight(1)
 
-        MLabel({ Label: UnitConstants.BLOOD_PRESSURE_UNIT })
+        MLabel({ Label: UnitConstants.URIC_ACID_UNIT })
       }
 
       Row({ space: 4 }) {
-        MLabel({ Label: "舒张压:" })
+        MLabel({ Label: "备注:" })
 
         MTextInput({
-          type: InputType.NUMBER_DECIMAL,
-          text: this.diastolicText,
+          type: InputType.Normal,
+          text: this.inputNote,
           onText: (v: string) => {
-            this.diastolicText = v
+            this.inputNote = v;
           }
         }).layoutWeight(1)
-
-        MLabel({ Label: UnitConstants.BLOOD_PRESSURE_UNIT })
       }
     }
   }
@@ -83,9 +81,12 @@ export struct BloodPressureInputView {
     RelativeContainer() {
       MTitleBar({
         style: 1,
-        title: "血压信息",
+        title: "尿酸信息",
         handleBack: () => {
-          this.onSubmit()
+          if (this.onSubmit) {
+            this.onSubmit()
+          }
+          this.controller.close()
         }
       }).alignRules({
         top: { anchor: '__container__', align: VerticalAlign.Top },

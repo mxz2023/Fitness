@@ -9,38 +9,33 @@
  */
 
 import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component"
-import { FLabel as MLabel } from '../../components/FLabel'
+import { FLabel as MLabel } from '../components/FLabel'
 
-import { BloodLipidData } from "../../models/HealthDataModel"
-import { UnitConstants } from '../../common/HealthTypeDefine';
+import { BloodLipidData } from "../models/HealthDataModel"
+import { UnitConstants } from '../common/HealthTypeDefine';
 
 
-@ComponentV2
-export struct BloodLipidInputView {
-  @Event onSubmit: (data?: BloodLipidData) => void;
-  @Param @Require totalCholesterol: number;
-  @Param @Require triglycerides: number;
-  @Param @Require hdlCholesterol: number;
-  @Param @Require ldlCholesterol: number;
-  // 本地状态
-  @Local private totalCholesterolText: string = "";
-  @Local private triglyceridesText: string = "";
-  @Local private hdlCholesterolText: string = "";
-  @Local private ldlCholesterolText: string = "";
+@CustomDialog
+export struct BloodLipidInputDialog {
+  controller: CustomDialogController
+  onSubmit?: (data?: BloodLipidData) => void;
+
+  @Prop @Require totalCholesterol: number;
+  @Prop @Require triglycerides: number;
+  @Prop @Require hdlCholesterol: number;
+  @Prop @Require ldlCholesterol: number;
+
 
   aboutToAppear(): void {
-    this.totalCholesterolText = `${this.totalCholesterol}`;
-    this.triglyceridesText = `${this.triglycerides}`;
-    this.hdlCholesterolText = `${this.hdlCholesterol}`;
-    this.ldlCholesterolText = `${this.ldlCholesterol}`;
+
   }
 
   private async saveData() {
     if (
-      this.totalCholesterolText.length <= 0 ||
-      this.triglyceridesText.length <= 0 ||
-      this.hdlCholesterolText.length <= 0 ||
-      this.ldlCholesterolText.length <= 0
+      this.totalCholesterol <= 0 ||
+      this.triglycerides <= 0 ||
+      this.hdlCholesterol <= 0 ||
+      this.ldlCholesterol <= 0
     ) {
       return
     }
@@ -48,13 +43,16 @@ export struct BloodLipidInputView {
     const record: BloodLipidData = {
       id: `bloodLipid_${now}`,
       timestamp: now,
-      totalCholesterol: Number(this.totalCholesterolText),
-      triglycerides: Number(this.triglyceridesText),
-      hdlCholesterol: Number(this.hdlCholesterolText),
-      ldlCholesterol: Number(this.ldlCholesterolText),
+      totalCholesterol: this.totalCholesterol,
+      triglycerides: this.triglycerides,
+      hdlCholesterol: this.hdlCholesterol,
+      ldlCholesterol: this.ldlCholesterol,
       note: ''
     }
-    this.onSubmit(record)
+    if (this.onSubmit) {
+      this.onSubmit(record)
+    }
+    this.controller.close()
   }
 
   @Builder
@@ -65,9 +63,13 @@ export struct BloodLipidInputView {
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
-          text: this.totalCholesterolText,
+          text: `${this.totalCholesterol}`,
           onText: (v: string) => {
-            this.totalCholesterolText = v;
+            const value = parseFloat(v)
+            if (isNaN(value) || value <= 0) {
+              return
+            }
+            this.totalCholesterol = value;
           }
         }).layoutWeight(1)
 
@@ -79,9 +81,13 @@ export struct BloodLipidInputView {
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
-          text: this.triglyceridesText,
+          text: `${this.triglycerides}`,
           onText: (v: string) => {
-            this.triglyceridesText = v;
+            const value = parseFloat(v)
+            if (isNaN(value) || value <= 0) {
+              return
+            }
+            this.triglycerides = value;
           }
         }).layoutWeight(1)
 
@@ -92,10 +98,14 @@ export struct BloodLipidInputView {
         MLabel({ Label: "高密度脂蛋白:" })
 
         MTextInput({
-          text: this.hdlCholesterolText,
+          text: `${this.hdlCholesterol}`,
           type: InputType.NUMBER_DECIMAL,
           onText: (v: string) => {
-            this.hdlCholesterolText = v;
+            const value = parseFloat(v)
+            if (isNaN(value) || value <= 0) {
+              return
+            }
+            this.hdlCholesterol = value;
           }
         }).layoutWeight(1)
 
@@ -107,9 +117,13 @@ export struct BloodLipidInputView {
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
-          text: this.ldlCholesterolText,
+          text: `${this.ldlCholesterol}`,
           onText: (v: string) => {
-            this.ldlCholesterolText = v;
+            const value = parseFloat(v)
+            if (isNaN(value) || value <= 0) {
+              return
+            }
+            this.ldlCholesterol = value;
           }
         }).layoutWeight(1)
 
@@ -124,7 +138,10 @@ export struct BloodLipidInputView {
         style:1,
         title: "血脂信息",
         handleBack: () => {
-          this.onSubmit()
+          if (this.onSubmit) {
+            this.onSubmit()
+          }
+          this.controller.close()
         }
       }).alignRules({
         top: { anchor: '__container__', align: VerticalAlign.Top },

@@ -158,6 +158,7 @@ export struct BaseInputDialog {
           if (this.onSubmit) {
             this.onSubmit()
           }
+          this.controller.close()
         }
       }).alignRules({
         top: { anchor: '__container__', align: VerticalAlign.Top },
@@ -189,6 +190,7 @@ export struct BaseInputDialog {
                 heightCm: Number(this.heightCm) || 0
               });
             }
+            this.controller.close()
           }
         })
       }

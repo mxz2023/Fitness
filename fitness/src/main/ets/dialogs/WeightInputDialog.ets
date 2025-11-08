@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2023-2025 Mxz Co., Ltd.
  *
- * @file UricAcidInputView.ets
+ * @file WeightInputView.ets
  * @project FitnessTracker
  * @author vincent_gemini
  * @crateTime 2025-10-04
@@ -9,68 +9,65 @@
  */
 
 import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component"
-import { FLabel as MLabel } from '../../components/FLabel'
+import { FLabel as MLabel } from '../components/FLabel'
 
-import { UricAcidData } from "../../models/HealthDataModel"
-import { Gender } from "../../models/UserDataModel"
-import { UnitConstants } from '../../common/HealthTypeDefine';
+import { WeightData } from "../models/HealthDataModel";
+import { UnitConstants } from '../common/HealthTypeDefine';
 
 
-@ComponentV2
-export struct UricAcidInputView {
-  @Event onSubmit: (data?: UricAcidData) => void;
-  @Param @Require inputValue: number;
-  @Param @Require gender: Gender;
-  @Local inputNote: string = '';
-  // 本地状态
-  @Local private inputText: string = "";
+@CustomDialog
+export struct WeightInputDialog {
+  controller: CustomDialogController
+  onSubmit?: (data?: WeightData) => void;
+
+  @Prop @Require weightKg: number;
 
   aboutToAppear(): void {
-    this.inputText = `${this.inputValue}`
+
   }
 
-  async saveData() {
-    const value = parseFloat(this.inputText)
-    if (isNaN(value) || value <= 0) {
-      return
+  private async saveData() {
+    const now = Date.now();
+    const record = new WeightData();
+    record.id = `weight_${now}`;
+    record.timestamp = now;
+    record.value = this.weightKg || 0;
+    record.note = '';
+    if (this.onSubmit) {
+      this.onSubmit(record);
     }
-    const record: UricAcidData = {
-      id: `uricAcid_${Date.now()}`,
-      timestamp: Date.now(),
-      value: value,
-      gender: this.gender ?? Gender.UNKNOWN,
-      note: this.inputNote || ''
-    }
-    this.onSubmit(record)
+    this.controller.close()
   }
 
   @Builder
   contentBuilder() {
     Column({ space: 4 }) {
+
       Row({ space: 4 }) {
-        MLabel({ Label: "尿酸:" })
+        MLabel({ Label: "体重:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
-          text: this.inputText,
+          text: `${this.weightKg}`,
           onText: (v: string) => {
-            this.inputText = v;
+            // 数字与小数点输入校验，最多两位小数
+            let res: string = v ?? '';
+            if (!/^\d*\.?\d*$/.test(res)) {
+              return;
+            }
+            const parts: string[] = res.split('.');
+            if (parts.length > 1 && parts[1].length > 2) {
+              res = `${parts[0]}.${parts[1].substring(0, 2)}`;
+            }
+            const value = parseFloat(res)
+            if (isNaN(value) || value <= 0) {
+              return
+            }
+            this.weightKg = value;
           }
         }).layoutWeight(1)
 
-        MLabel({ Label: UnitConstants.URIC_ACID_UNIT })
-      }
-
-      Row({ space: 4 }) {
-        MLabel({ Label: "备注:" })
-
-        MTextInput({
-          type: InputType.Normal,
-          text: this.inputNote,
-          onText: (v: string) => {
-            this.inputNote = v;
-          }
-        }).layoutWeight(1)
+        MLabel({ Label: UnitConstants.WEIGHT_UNIT })
       }
     }
   }
@@ -79,9 +76,12 @@ export struct UricAcidInputView {
     RelativeContainer() {
       MTitleBar({
         style: 1,
-        title: "尿酸信息",
+        title: "体重信息",
         handleBack: () => {
-          this.onSubmit()
+          if (this.onSubmit) {
+            this.onSubmit()
+          }
+          this.controller.close()
         }
       }).alignRules({
         top: { anchor: '__container__', align: VerticalAlign.Top },

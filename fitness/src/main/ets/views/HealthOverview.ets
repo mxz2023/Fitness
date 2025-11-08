@@ -38,8 +38,12 @@ import { HealthInfoCard } from './HealthInfoCard';
 import { UserInfoCard } from './UserInfoCard';
 
 import { UnitConstants } from '../common/HealthTypeDefine';
-import { HealthInputDialog } from '../dialogs/HealthInputDialog';
 import { BaseInputDialog } from '../dialogs/BaseInputDialog';
+import { WeightInputDialog } from '../dialogs/WeightInputDialog';
+import { BloodSugarInputDialog } from '../dialogs/BloodSugarInputDialog';
+import { UricAcidInputDialog } from '../dialogs/UricAcidInputDialog';
+import { BloodPressureInputDialog } from '../dialogs/BloodPressureInputDialog';
+import { BloodLipidInputDialog } from '../dialogs/BloodLipidInputDialog';
 
 
 interface ToolItem {
@@ -429,14 +433,11 @@ export struct HealthOverview {
 
   private showWeightDialog() {
     const dialogController: CustomDialogController = new CustomDialogController({
-      builder: BaseInputDialog({
-        nickname: this.userInfoVM!.nickname,
-        gender: this.userInfoVM!.gender,
-        heightCm: this.userInfoVM!.heightCm,
-        age: this.userInfoVM!.age,
+      builder: WeightInputDialog({
+        weightKg: this.weightDataVM!.value,
         onSubmit: (res) => {
           if (res) {
-            this.updateUserInfo(res)
+            this.updateWeight(res)
           }
         }
       }),
@@ -451,14 +452,11 @@ export struct HealthOverview {
 
   private showBloodSugarDialog() {
     const dialogController: CustomDialogController = new CustomDialogController({
-      builder: BaseInputDialog({
-        nickname: this.userInfoVM!.nickname,
-        gender: this.userInfoVM!.gender,
-        heightCm: this.userInfoVM!.heightCm,
-        age: this.userInfoVM!.age,
+      builder: BloodSugarInputDialog({
+        bloodSugarValue:this.bloodSugarVM!.value,
         onSubmit: (res) => {
           if (res) {
-            this.updateUserInfo(res)
+            this.updateBloodSugar(res)
           }
         }
       }),
@@ -473,14 +471,12 @@ export struct HealthOverview {
 
   private showUricAcidDialog() {
     const dialogController: CustomDialogController = new CustomDialogController({
-      builder: BaseInputDialog({
-        nickname: this.userInfoVM!.nickname,
-        gender: this.userInfoVM!.gender,
-        heightCm: this.userInfoVM!.heightCm,
-        age: this.userInfoVM!.age,
+      builder: UricAcidInputDialog({
+        inputValue:this.uricAcidVM!.value,
+        gender:this.userInfoVM!.gender,
         onSubmit: (res) => {
           if (res) {
-            this.updateUserInfo(res)
+            this.updateUricAcid(res)
           }
         }
       }),
@@ -495,14 +491,12 @@ export struct HealthOverview {
 
   private showBloodPressureDialog() {
     const dialogController: CustomDialogController = new CustomDialogController({
-      builder: BaseInputDialog({
-        nickname: this.userInfoVM!.nickname,
-        gender: this.userInfoVM!.gender,
-        heightCm: this.userInfoVM!.heightCm,
-        age: this.userInfoVM!.age,
+      builder: BloodPressureInputDialog({
+        systolicValue:this.bloodPressVM!.systolic,
+        diastolicValue:this.bloodPressVM!.diastolic,
         onSubmit: (res) => {
           if (res) {
-            this.updateUserInfo(res)
+            this.updateBloodPressure(res)
           }
         }
       }),
@@ -517,14 +511,14 @@ export struct HealthOverview {
 
   private showBloodLipidDialog() {
     const dialogController: CustomDialogController = new CustomDialogController({
-      builder: BaseInputDialog({
-        nickname: this.userInfoVM!.nickname,
-        gender: this.userInfoVM!.gender,
-        heightCm: this.userInfoVM!.heightCm,
-        age: this.userInfoVM!.age,
+      builder: BloodLipidInputDialog({
+        totalCholesterol:this.bloodLipidVM!.totalCholesterol,
+        triglycerides:this.bloodLipidVM!.triglycerides,
+        hdlCholesterol:this.bloodLipidVM!.hdlCholesterol,
+        ldlCholesterol:this.bloodLipidVM!.ldlCholesterol,
         onSubmit: (res) => {
           if (res) {
-            this.updateUserInfo(res)
+            this.updateBloodLipid(res)
           }
         }
       }),
@@ -551,29 +545,7 @@ export struct HealthOverview {
               nGender: this.userInfoVM?.gender,
               nHeight: this.userInfoVM?.heightCm,
               handleClick: (type: HealthCardDataType) => {
-                switch (type) {
-                  case HealthCardDataType.BaseInfo: {
-                    break
-                  }
-                  case HealthCardDataType.WeightInfo: {
-                    break
-                  }
-                  case HealthCardDataType.BloodSugarInfo: {
-                    break
-                  }
-                  case HealthCardDataType.UricAcidInfo: {
-                    break
-                  }
-                  case HealthCardDataType.BloodPressureInfo: {
-                    break
-                  }
-                  case HealthCardDataType.BloodLipidInfo: {
-                    break
-                  }
-                  default :{
-                    break
-                  }
-                }
+                this.showBaseInputDialog()
               }
             })
             // 健康指标网格
@@ -584,25 +556,26 @@ export struct HealthOverview {
                     data: cardData,
                     handleClick: (type) => {
                       const res = this.userInfoVM?.validateUserData()
-                      this.showBaseInputDialog()
                       if (res?.isValid) {
                         switch (type) {
-                          case HealthCardDataType.BaseInfo: {
-                            break
-                          }
                           case HealthCardDataType.WeightInfo: {
+                            this.showWeightDialog()
                             break
                           }
                           case HealthCardDataType.BloodSugarInfo: {
+                            this.showBloodSugarDialog()
                             break
                           }
                           case HealthCardDataType.UricAcidInfo: {
+                            this.showUricAcidDialog()
                             break
                           }
                           case HealthCardDataType.BloodPressureInfo: {
+                            this.showBloodPressureDialog()
                             break
                           }
                           case HealthCardDataType.BloodLipidInfo: {
+                            this.showBloodLipidDialog()
                             break
                           }
                           default :{
@@ -628,18 +601,23 @@ export struct HealthOverview {
                     getAppPathStack().pushPathByName("history", data, (res) => {
                       switch (res.result) {
                         case 'weight': {
+                          this.showWeightDialog()
                           break;
                         }
                         case 'bloodSugar': {
+                          this.showBloodSugarDialog()
                           break;
                         }
                         case 'uricAcid': {
+                          this.showUricAcidDialog()
                           break;
                         }
                         case 'bloodPressure': {
+                          this.showBloodPressureDialog()
                           break;
                         }
                         case 'bloodLipid': {
+                          this.showBloodLipidDialog()
                           break;
                         }
                         default: {

@@ -9,41 +9,37 @@
  */
 
 import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
-import { FLabel as MLabel } from '../../components/FLabel'
+import { FLabel as MLabel } from '../components/FLabel'
 
-import { BloodSugarData, MeasurementType } from "../../models/HealthDataModel";
-import { UnitConstants } from '../../common/HealthTypeDefine';
+import { BloodSugarData, MeasurementType } from "../models/HealthDataModel";
+import { UnitConstants } from '../common/HealthTypeDefine';
 
 
-@ComponentV2
-export struct BloodSugarInputView {
-  @Event onSubmit: (data?: BloodSugarData) => void;
-  @Param @Require bloodSugarValue: number;
-  @Param measurementType: MeasurementType = MeasurementType.RANDOM;
-  // 本地状态
-  @Local private bloodSugarText: string = "";
-  @Local private measurementText: MeasurementType = MeasurementType.RANDOM;
+@CustomDialog
+export struct BloodSugarInputDialog {
+  controller: CustomDialogController
+  onSubmit?: (data?: BloodSugarData) => void;
+
+  @Prop @Require bloodSugarValue: number;
+  @Prop measurementType: MeasurementType = MeasurementType.RANDOM;
 
   aboutToAppear(): void {
-    this.bloodSugarText = `${this.bloodSugarValue}`;
-    this.measurementText = this.measurementType;
+
   }
 
   private async saveData() {
-    const value = parseFloat(this.bloodSugarText)
-    if (isNaN(value) || value <= 0) {
-      return
-    }
-
     const now = Date.now();
     const record: BloodSugarData = {
       id: `bloodSugar_${now}`,
       timestamp: now,
-      value: value,
+      value: this.bloodSugarValue,
       measurementType: this.measurementType,
       note: ''
     };
-    this.onSubmit(record);
+    if (this.onSubmit) {
+      this.onSubmit(record);
+    }
+    this.controller.close();
   }
 
   @Builder
@@ -54,9 +50,13 @@ export struct BloodSugarInputView {
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
-          text: this.bloodSugarText,
+          text: `${this.bloodSugarValue}`,
           onText: (v: string) => {
-            this.bloodSugarText = v;
+            const value = parseFloat(v)
+            if (isNaN(value) || value <= 0) {
+              return
+            }
+            this.bloodSugarValue = value;
           }
         }).layoutWeight(1)
 
@@ -68,26 +68,26 @@ export struct BloodSugarInputView {
 
         Row({ space: 8 }) {
           Radio({ value: 'FASTING', group: 'bsType' })
-            .checked(this.measurementText === MeasurementType.FASTING)
+            .checked(this.measurementType === MeasurementType.FASTING)
             .onChange((c: boolean) => {
               if (c) {
-                this.measurementText = MeasurementType.FASTING;
+                this.measurementType = MeasurementType.FASTING;
               }
             })
           Text('空腹')
           Radio({ value: 'AFTER_MEAL', group: 'bsType' })
-            .checked(this.measurementText === MeasurementType.AFTER_MEAL)
+            .checked(this.measurementType === MeasurementType.AFTER_MEAL)
             .onChange((c: boolean) => {
               if (c) {
-                this.measurementText = MeasurementType.AFTER_MEAL;
+                this.measurementType = MeasurementType.AFTER_MEAL;
               }
             })
           Text('餐后')
           Radio({ value: 'RANDOM', group: 'bsType' })
-            .checked(this.measurementText === MeasurementType.RANDOM)
+            .checked(this.measurementType === MeasurementType.RANDOM)
             .onChange((c: boolean) => {
               if (c) {
-                this.measurementText = MeasurementType.RANDOM;
+                this.measurementType = MeasurementType.RANDOM;
               }
             })
           Text('随机')
@@ -105,7 +105,10 @@ export struct BloodSugarInputView {
         style: 1,
         title: "血糖信息",
         handleBack: () => {
-          this.onSubmit()
+          if (this.onSubmit) {
+            this.onSubmit()
+          }
+          this.controller.close();
         }
       }).alignRules({
         top: { anchor: '__container__', align: VerticalAlign.Top },
