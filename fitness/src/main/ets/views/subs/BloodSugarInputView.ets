@@ -9,7 +9,7 @@
  */
 
 import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
-import { FLable as MLable } from '../../components/FLable'
+import { FLabel as MLabel } from '../../components/FLabel'
 
 import { BloodSugarData, MeasurementType } from "../../models/HealthDataModel";
 import { UnitConstants } from '../../common/HealthTypeDefine';
@@ -19,7 +19,7 @@ import { UnitConstants } from '../../common/HealthTypeDefine';
 export struct BloodSugarInputView {
   @Event onSubmit: (data?: BloodSugarData) => void;
   @Param @Require bloodSugarValue: number;
-  @Param @Require measurementType: MeasurementType;
+  @Param measurementType: MeasurementType = MeasurementType.RANDOM;
   // 本地状态
   @Local private bloodSugarText: string = "";
   @Local private measurementText: MeasurementType = MeasurementType.RANDOM;
@@ -50,7 +50,7 @@ export struct BloodSugarInputView {
   contentBuilder() {
     Column() {
       Row({ space: 4 }) {
-        MLable({ lable: "血糖:" })
+        MLabel({ Label: "血糖:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
@@ -60,11 +60,11 @@ export struct BloodSugarInputView {
           }
         }).layoutWeight(1)
 
-        MLable({ lable: UnitConstants.BLOOD_SUGAR_UNIT })
+        MLabel({ Label: UnitConstants.BLOOD_SUGAR_UNIT })
       }
 
       Row({ space: 4 }) {
-        MLable({ lable: "测量类型:" })
+        MLabel({ Label: "测量类型:" })
 
         Row({ space: 8 }) {
           Radio({ value: 'FASTING', group: 'bsType' })

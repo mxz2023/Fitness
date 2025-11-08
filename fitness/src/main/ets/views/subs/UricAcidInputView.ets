@@ -9,7 +9,7 @@
  */
 
 import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component"
-import { FLable as MLable } from '../../components/FLable'
+import { FLabel as MLabel } from '../../components/FLabel'
 
 import { UricAcidData } from "../../models/HealthDataModel"
 import { Gender } from "../../models/UserDataModel"
@@ -48,7 +48,7 @@ export struct UricAcidInputView {
   contentBuilder() {
     Column({ space: 4 }) {
       Row({ space: 4 }) {
-        MLable({ lable: "尿酸:" })
+        MLabel({ Label: "尿酸:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
@@ -58,11 +58,11 @@ export struct UricAcidInputView {
           }
         }).layoutWeight(1)
 
-        MLable({ lable: UnitConstants.URIC_ACID_UNIT })
+        MLabel({ Label: UnitConstants.URIC_ACID_UNIT })
       }
 
       Row({ space: 4 }) {
-        MLable({ lable: "备注:" })
+        MLabel({ Label: "备注:" })
 
         MTextInput({
           type: InputType.Normal,

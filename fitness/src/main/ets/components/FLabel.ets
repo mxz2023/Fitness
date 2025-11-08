@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2023-2025 Mxz Co., Ltd.
  *
- * @file FLable.ets
+ * @file FLabel.ets
  * @project Fitness
  * @author vincent_gemini
  * @crateTime 2025-11-04
@@ -12,14 +12,14 @@ import { ColorConstants, FontSizeConstants } from "@mxz/component"
 
 
 @ComponentV2
-export struct FLable {
-  @Param lable: string = ''
+export struct FLabel {
+  @Param Label: string = ''
   @Param fontColor: string = ColorConstants.Text_666
   private fontSize: number = FontSizeConstants.Normal
 
   build() {
     Row() {
-      Text(`${this.lable}`)
+      Text(`${this.Label}`)
         .fontSize(this.fontSize)
         .fontColor(this.fontColor)
         .lineHeight(24)

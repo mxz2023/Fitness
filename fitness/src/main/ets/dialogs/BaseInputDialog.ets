@@ -3,29 +3,28 @@
  * 灰背景(参考 310x621)、居中白色卡片(265x345, 圆角5)、底部绿色胶囊按钮(224x28)
  */
 import { MButton, MRadio, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
-import { UserDataModel, Gender } from "../../models/UserDataModel";
-import { UnitConstants } from '../../common/HealthTypeDefine';
-import { FLabel as MLabel } from '../../components/FLabel'
+import { UserDataModel, Gender } from "../models/UserDataModel";
+import { UnitConstants } from '../common/HealthTypeDefine';
+import { FLabel as MLabel } from '../components/FLabel'
 
 
-@Preview
-@ComponentV2
-export struct BaseInputView {
-  @Param @Require initData: UserDataModel
-  @Event onSubmit: (data?: UserDataModel) => void
+
+@CustomDialog
+export struct BaseInputDialog {
+  controller: CustomDialogController
+  onSubmit?: (data?: UserDataModel) => void
+
   // 本地状态
-  @Local private nickname: string = '';
-  @Local private gender: Gender = Gender.UNKNOWN; // 备选：未知/男/女
-  @Local private year: number = 1983
-  @Local private heightCm: number = 0;
+  @Prop @Require nickname: string
+  @Prop @Require heightCm: number
+  @Prop @Require age:number;
+  @Prop gender: Gender = Gender.MALE; // 备选：未知/男/女
+  @State year: number = 1983
 
   aboutToAppear(): void {
-    this.nickname = this.initData.nickname
-    this.gender = this.initData.gender
-    this.heightCm = this.initData.heightCm
     const year = new Date().getFullYear()
-    if (this.initData.age > 0) {
-      this.year = year - this.initData.age
+    if (this.age > 0) {
+      this.year = year - this.age
     }
   }
 
@@ -156,7 +155,9 @@ export struct BaseInputView {
         style: 1,
         title: "基本信息",
         handleBack: () => {
-          this.onSubmit()
+          if (this.onSubmit) {
+            this.onSubmit()
+          }
         }
       }).alignRules({
         top: { anchor: '__container__', align: VerticalAlign.Top },
@@ -180,12 +181,14 @@ export struct BaseInputView {
           text: '保存记录',
           bgColor: ColorConstants.Green,
           onClickBlock: () => {
-            this.onSubmit({
-              nickname: this.nickname?.trim() ?? '',
-              gender: this.gender,
-              age: (new Date().getFullYear() - this.year),
-              heightCm: Number(this.heightCm) || 0
-            });
+            if (this.onSubmit) {
+              this.onSubmit({
+                nickname: this.nickname?.trim() ?? '',
+                gender: this.gender,
+                age: (new Date().getFullYear() - this.year),
+                heightCm: Number(this.heightCm) || 0
+              });
+            }
           }
         })
       }
@@ -197,11 +200,12 @@ export struct BaseInputView {
       })
     }
     .width('100%')
-    .height('100%')
+    .height(400)
     .constraintSize({
       maxWidth: 500
     })
     .padding(AppConstants.VIEW_PADDING)
     .borderRadius(AppConstants.VIEW_RADIUS)
+    .backgroundColor(ColorConstants.White)
   }
 }

@@ -2,7 +2,7 @@
  * 健康数据概览页面
  * 基于 Figma 设计实现的健康指标卡片式布局
  */
-import { KeyboardAvoidMode } from '@kit.ArkUI';
+import { KeyboardAvoidMode, window } from '@kit.ArkUI';
 
 import {
   MIconButton,
@@ -16,12 +16,6 @@ import {
 } from '@mxz/component';
 import { MRouter } from '@mxz/router';
 
-import { BaseInputView } from './subs/BaseInputView';
-import { WeightInputView } from './subs/WeightInputView';
-import { BloodPressureInputView } from './subs/BloodPressureInputView';
-import { BloodSugarInputView } from './subs/BloodSugarInputView';
-import { UricAcidInputView } from './subs/UricAcidInputView';
-import { BloodLipidInputView } from './subs/BloodLipidInputView';
 import {
   WeightData,
   BloodPressureData,
@@ -44,7 +38,8 @@ import { HealthInfoCard } from './HealthInfoCard';
 import { UserInfoCard } from './UserInfoCard';
 
 import { UnitConstants } from '../common/HealthTypeDefine';
-
+import { HealthInputDialog } from '../dialogs/HealthInputDialog';
+import { BaseInputDialog } from '../dialogs/BaseInputDialog';
 
 
 interface ToolItem {
@@ -86,7 +81,6 @@ export struct HealthPage {
 
 @ComponentV2
 export struct HealthOverview {
-  @Local private showType: HealthCardDataType = HealthCardDataType.Unknown;
   @Local private isLoading: boolean = true
   @Local private columnsTemplate: string = '1fr 1fr'
   @Local private showQuick: boolean = true // 显示快速入口
@@ -122,7 +116,7 @@ export struct HealthOverview {
         x: -200,
         y: 0,
         handleClick: () => {
-          this.showType = HealthCardDataType.WeightInfo
+          this.showWeightDialog()
         }
       },
       {
@@ -130,7 +124,7 @@ export struct HealthOverview {
         x: -130,
         y: -130,
         handleClick: () => {
-          this.showType = HealthCardDataType.BloodSugarInfo
+          this.showBloodSugarDialog()
         }
       },
       {
@@ -139,7 +133,7 @@ export struct HealthOverview {
         y: -200,
 
         handleClick: () => {
-          this.showType = HealthCardDataType.UricAcidInfo
+          this.showUricAcidDialog()
         }
       },
       {
@@ -147,7 +141,7 @@ export struct HealthOverview {
         x: 130,
         y: -130,
         handleClick: () => {
-          this.showType = HealthCardDataType.BloodPressureInfo
+          this.showBloodPressureDialog()
         }
       },
       {
@@ -155,7 +149,7 @@ export struct HealthOverview {
         x: 200,
         y: 0,
         handleClick: () => {
-          this.showType = HealthCardDataType.BloodLipidInfo
+          this.showBloodLipidDialog()
         }
       }
     ]
@@ -293,8 +287,6 @@ export struct HealthOverview {
     }
     this.userInfoVM.saveUserData().then((isOK: boolean) => {
       if (isOK) {
-        this.showType = HealthCardDataType.Unknown
-
         // 用户信息更新后，更新一下体重VM中的身高
         if (this.weightDataVM && this.userInfoVM) {
           this.weightDataVM.height = this.userInfoVM.heightCm
@@ -315,7 +307,6 @@ export struct HealthOverview {
     this.weightDataVM.value = data.value
     const res = await this.weightDataVM.saveData()
     if (res) {
-      this.showType = HealthCardDataType.Unknown
       showToast(this.getUIContext(), "保存数据成功")
     } else {
       showToast(this.getUIContext(), "保存数据失败")
@@ -331,7 +322,6 @@ export struct HealthOverview {
     this.bloodSugarVM.measurementType = data.measurementType
     const res = await this.bloodSugarVM.saveData()
     if (res) {
-      this.showType = HealthCardDataType.Unknown
       showToast(this.getUIContext(), "保存数据成功")
     } else {
       showToast(this.getUIContext(), "保存数据失败")
@@ -347,7 +337,6 @@ export struct HealthOverview {
     this.uricAcidVM.gender = data.gender
     const res = await this.uricAcidVM.saveData()
     if (res) {
-      this.showType = HealthCardDataType.Unknown
       showToast(this.getUIContext(), "保存数据成功")
     } else {
       showToast(this.getUIContext(), "保存数据失败")
@@ -363,7 +352,6 @@ export struct HealthOverview {
     this.bloodPressVM.diastolic = data.diastolic
     const res = await this.bloodPressVM.saveData()
     if (res) {
-      this.showType = HealthCardDataType.Unknown
       showToast(this.getUIContext(), "保存数据成功")
     } else {
       showToast(this.getUIContext(), "保存数据失败")
@@ -381,7 +369,6 @@ export struct HealthOverview {
     this.bloodLipidVM.ldlCholesterol = data.ldlCholesterol
     const res = await this.bloodLipidVM.saveData()
     if (res) {
-      this.showType = HealthCardDataType.Unknown
       showToast(this.getUIContext(), "保存数据成功")
     } else {
       showToast(this.getUIContext(), "保存数据失败")
@@ -418,6 +405,139 @@ export struct HealthOverview {
     this.showExpandedButtons = false
   }
 
+  private showBaseInputDialog() {
+    const dialogController: CustomDialogController = new CustomDialogController({
+      builder: BaseInputDialog({
+        nickname: this.userInfoVM!.nickname,
+        gender: this.userInfoVM!.gender,
+        heightCm: this.userInfoVM!.heightCm,
+        age: this.userInfoVM!.age,
+        onSubmit: (res) => {
+          if (res) {
+            this.updateUserInfo(res)
+          }
+        }
+      }),
+      customStyle: true, // 关键参数：允许自定义样式
+      alignment: DialogAlignment.Bottom,
+      offset: { dx: 0, dy: 0 },
+      maskColor: ColorConstants.View_Mask,
+      autoCancel: false,
+    })
+    dialogController.open()
+  }
+
+  private showWeightDialog() {
+    const dialogController: CustomDialogController = new CustomDialogController({
+      builder: BaseInputDialog({
+        nickname: this.userInfoVM!.nickname,
+        gender: this.userInfoVM!.gender,
+        heightCm: this.userInfoVM!.heightCm,
+        age: this.userInfoVM!.age,
+        onSubmit: (res) => {
+          if (res) {
+            this.updateUserInfo(res)
+          }
+        }
+      }),
+      customStyle: true, // 关键参数：允许自定义样式
+      alignment: DialogAlignment.Bottom,
+      offset: { dx: 0, dy: 0 },
+      maskColor: ColorConstants.View_Mask,
+      autoCancel: false,
+    })
+    dialogController.open()
+  }
+
+  private showBloodSugarDialog() {
+    const dialogController: CustomDialogController = new CustomDialogController({
+      builder: BaseInputDialog({
+        nickname: this.userInfoVM!.nickname,
+        gender: this.userInfoVM!.gender,
+        heightCm: this.userInfoVM!.heightCm,
+        age: this.userInfoVM!.age,
+        onSubmit: (res) => {
+          if (res) {
+            this.updateUserInfo(res)
+          }
+        }
+      }),
+      customStyle: true, // 关键参数：允许自定义样式
+      alignment: DialogAlignment.Bottom,
+      offset: { dx: 0, dy: 0 },
+      maskColor: ColorConstants.View_Mask,
+      autoCancel: false,
+    })
+    dialogController.open()
+  }
+
+  private showUricAcidDialog() {
+    const dialogController: CustomDialogController = new CustomDialogController({
+      builder: BaseInputDialog({
+        nickname: this.userInfoVM!.nickname,
+        gender: this.userInfoVM!.gender,
+        heightCm: this.userInfoVM!.heightCm,
+        age: this.userInfoVM!.age,
+        onSubmit: (res) => {
+          if (res) {
+            this.updateUserInfo(res)
+          }
+        }
+      }),
+      customStyle: true, // 关键参数：允许自定义样式
+      alignment: DialogAlignment.Bottom,
+      offset: { dx: 0, dy: 0 },
+      maskColor: ColorConstants.View_Mask,
+      autoCancel: false,
+    })
+    dialogController.open()
+  }
+
+  private showBloodPressureDialog() {
+    const dialogController: CustomDialogController = new CustomDialogController({
+      builder: BaseInputDialog({
+        nickname: this.userInfoVM!.nickname,
+        gender: this.userInfoVM!.gender,
+        heightCm: this.userInfoVM!.heightCm,
+        age: this.userInfoVM!.age,
+        onSubmit: (res) => {
+          if (res) {
+            this.updateUserInfo(res)
+          }
+        }
+      }),
+      customStyle: true, // 关键参数：允许自定义样式
+      alignment: DialogAlignment.Bottom,
+      offset: { dx: 0, dy: 0 },
+      maskColor: ColorConstants.View_Mask,
+      autoCancel: false,
+    })
+    dialogController.open()
+  }
+
+  private showBloodLipidDialog() {
+    const dialogController: CustomDialogController = new CustomDialogController({
+      builder: BaseInputDialog({
+        nickname: this.userInfoVM!.nickname,
+        gender: this.userInfoVM!.gender,
+        heightCm: this.userInfoVM!.heightCm,
+        age: this.userInfoVM!.age,
+        onSubmit: (res) => {
+          if (res) {
+            this.updateUserInfo(res)
+          }
+        }
+      }),
+      customStyle: true, // 关键参数：允许自定义样式
+      alignment: DialogAlignment.Bottom,
+      offset: { dx: 0, dy: 0 },
+      maskColor: ColorConstants.View_Mask,
+      autoCancel: false,
+    })
+    dialogController.open()
+  }
+
+
   build() {
     RelativeContainer() {
       // 滚动容器
@@ -431,7 +551,29 @@ export struct HealthOverview {
               nGender: this.userInfoVM?.gender,
               nHeight: this.userInfoVM?.heightCm,
               handleClick: (type: HealthCardDataType) => {
-                this.showType = type
+                switch (type) {
+                  case HealthCardDataType.BaseInfo: {
+                    break
+                  }
+                  case HealthCardDataType.WeightInfo: {
+                    break
+                  }
+                  case HealthCardDataType.BloodSugarInfo: {
+                    break
+                  }
+                  case HealthCardDataType.UricAcidInfo: {
+                    break
+                  }
+                  case HealthCardDataType.BloodPressureInfo: {
+                    break
+                  }
+                  case HealthCardDataType.BloodLipidInfo: {
+                    break
+                  }
+                  default :{
+                    break
+                  }
+                }
               }
             })
             // 健康指标网格
@@ -442,8 +584,31 @@ export struct HealthOverview {
                     data: cardData,
                     handleClick: (type) => {
                       const res = this.userInfoVM?.validateUserData()
+                      this.showBaseInputDialog()
                       if (res?.isValid) {
-                        this.showType = type
+                        switch (type) {
+                          case HealthCardDataType.BaseInfo: {
+                            break
+                          }
+                          case HealthCardDataType.WeightInfo: {
+                            break
+                          }
+                          case HealthCardDataType.BloodSugarInfo: {
+                            break
+                          }
+                          case HealthCardDataType.UricAcidInfo: {
+                            break
+                          }
+                          case HealthCardDataType.BloodPressureInfo: {
+                            break
+                          }
+                          case HealthCardDataType.BloodLipidInfo: {
+                            break
+                          }
+                          default :{
+                            break
+                          }
+                        }
                       } else {
                         showToast(this.getUIContext(), "请先输入用户信息")
                       }
@@ -463,27 +628,21 @@ export struct HealthOverview {
                     getAppPathStack().pushPathByName("history", data, (res) => {
                       switch (res.result) {
                         case 'weight': {
-                          this.showType = HealthCardDataType.WeightInfo;
                           break;
                         }
                         case 'bloodSugar': {
-                          this.showType = HealthCardDataType.BloodSugarInfo;
                           break;
                         }
                         case 'uricAcid': {
-                          this.showType = HealthCardDataType.UricAcidInfo;
                           break;
                         }
                         case 'bloodPressure': {
-                          this.showType = HealthCardDataType.BloodPressureInfo;
                           break;
                         }
                         case 'bloodLipid': {
-                          this.showType = HealthCardDataType.BloodLipidInfo;
                           break;
                         }
                         default: {
-                          this.showType = HealthCardDataType.Unknown;
                           break;
                         }
                       }
@@ -539,102 +698,6 @@ export struct HealthOverview {
       .backgroundColor(ColorConstants.View_Background_Color)
       .scrollBar(BarState.Off)
       .edgeEffect(EdgeEffect.Spring)
-      .alignRules({
-        top: { anchor: '__container__', align: VerticalAlign.Top },
-        bottom: { anchor: '__container__', align: VerticalAlign.Bottom },
-        left: { anchor: '__container__', align: HorizontalAlign.Start },
-        right: { anchor: '__container__', align: HorizontalAlign.End }
-      })
-
-      // 遮罩背景半透明
-      Column() {
-        // 半弹层背景白色
-        Column() {
-          if (this.userInfoVM && this.showType === HealthCardDataType.BaseInfo) {
-            BaseInputView({
-              initData: {
-                nickname: this.userInfoVM.nickname,
-                gender: this.userInfoVM.gender,
-                heightCm: this.userInfoVM.heightCm,
-                age: this.userInfoVM.age,
-              } as UserDataModel,
-              onSubmit: (data?: UserDataModel) => {
-                if (data) {
-                  this.updateUserInfo(data)
-                } else {
-                  this.showType = HealthCardDataType.Unknown
-                }
-              }
-            }).height(350)
-          } else if (this.weightDataVM && this.showType === HealthCardDataType.WeightInfo) {
-            WeightInputView({
-              weightKg: this.weightDataVM.value,
-              onSubmit: (data?: WeightData) => {
-                if (data) {
-                  this.updateWeight(data)
-                } else {
-                  this.showType = HealthCardDataType.Unknown
-                }
-              }
-            }).height(250)
-          } else if (this.bloodSugarVM && this.showType === HealthCardDataType.BloodSugarInfo) {
-            BloodSugarInputView({
-              bloodSugarValue: this.bloodSugarVM.value,
-              measurementType: MeasurementType.FASTING,
-              onSubmit: (data?: BloodSugarData) => {
-                if (data) {
-                  this.updateBloodSugar(data)
-                } else {
-                  this.showType = HealthCardDataType.Unknown
-                }
-              }
-            }).height(300)
-          } else if (this.userInfoVM && this.uricAcidVM && this.showType === HealthCardDataType.UricAcidInfo) {
-            UricAcidInputView({
-              inputValue: this.uricAcidVM.value,
-              gender: this.userInfoVM.gender,
-              onSubmit: (data?: UricAcidData) => {
-                if (data) {
-                  this.updateUricAcid(data)
-                } else {
-                  this.showType = HealthCardDataType.Unknown
-                }
-              }
-            }).height(300)
-          } else if (this.bloodPressVM && this.showType === HealthCardDataType.BloodPressureInfo) {
-            BloodPressureInputView({
-              systolicValue: this.bloodPressVM.systolic,
-              diastolicValue: this.bloodPressVM.diastolic,
-              onSubmit: (data?: BloodPressureData) => {
-                if (data) {
-                  this.updateBloodPressure(data)
-                } else {
-                  this.showType = HealthCardDataType.Unknown
-                }
-              }
-            }).height(300)
-          } else if (this.bloodLipidVM && this.showType === HealthCardDataType.BloodLipidInfo) {
-            BloodLipidInputView({
-              totalCholesterol: this.bloodLipidVM.totalCholesterol,
-              triglycerides: this.bloodLipidVM.triglycerides,
-              hdlCholesterol: this.bloodLipidVM.hdlCholesterol,
-              ldlCholesterol: this.bloodLipidVM.ldlCholesterol,
-              onSubmit: (data?: BloodLipidData) => {
-                if (data) {
-                  this.updateBloodLipid(data)
-                } else {
-                  this.showType = HealthCardDataType.Unknown
-                }
-              }
-            }).height(400)
-          }
-        }
-        .width('100%')
-        .backgroundColor(ColorConstants.White)
-      }
-      .justifyContent(FlexAlign.End)
-      .visibility(this.showType === HealthCardDataType.Unknown ? Visibility.Hidden : Visibility.Visible)
-      .backgroundColor(ColorConstants.View_Mask)
       .alignRules({
         top: { anchor: '__container__', align: VerticalAlign.Top },
         bottom: { anchor: '__container__', align: VerticalAlign.Bottom },

@@ -9,7 +9,7 @@
  */
 
 import {
-  MStatusLable,
+  MStatusLabel,
   MDashBoardStyle,
   MDashBoardV1,
   MDashBoardV2,
@@ -43,7 +43,7 @@ export struct HealthInfoCard {
 
         Blank()
 
-        MStatusLable({
+        MStatusLabel({
           title: {
             text: getHealthStatusText(this.data.status),
             color: getHealthStatusColor(this.data.status)

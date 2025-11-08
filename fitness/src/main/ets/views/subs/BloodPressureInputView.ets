@@ -9,7 +9,7 @@
  */
 
 import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component";
-import { FLable as MLable } from '../../components/FLable'
+import { FLabel as MLabel } from '../../components/FLabel'
 
 import { BloodPressureData } from "../../models/HealthDataModel";
 import { UnitConstants } from '../../common/HealthTypeDefine';
@@ -50,7 +50,7 @@ export struct BloodPressureInputView {
   contentBuilder() {
     Column({ space: 4 }) {
       Row({ space: 4 }) {
-        MLable({ lable: "收缩压:" })
+        MLabel({ Label: "收缩压:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
@@ -60,11 +60,11 @@ export struct BloodPressureInputView {
           }
         }).layoutWeight(1)
 
-        MLable({ lable: UnitConstants.BLOOD_PRESSURE_UNIT })
+        MLabel({ Label: UnitConstants.BLOOD_PRESSURE_UNIT })
       }
 
       Row({ space: 4 }) {
-        MLable({ lable: "舒张压:" })
+        MLabel({ Label: "舒张压:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
@@ -74,7 +74,7 @@ export struct BloodPressureInputView {
           }
         }).layoutWeight(1)
 
-        MLable({ lable: UnitConstants.BLOOD_PRESSURE_UNIT })
+        MLabel({ Label: UnitConstants.BLOOD_PRESSURE_UNIT })
       }
     }
   }

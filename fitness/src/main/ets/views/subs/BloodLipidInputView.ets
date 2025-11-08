@@ -9,7 +9,7 @@
  */
 
 import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component"
-import { FLable as MLable } from '../../components/FLable'
+import { FLabel as MLabel } from '../../components/FLabel'
 
 import { BloodLipidData } from "../../models/HealthDataModel"
 import { UnitConstants } from '../../common/HealthTypeDefine';
@@ -61,7 +61,7 @@ export struct BloodLipidInputView {
   contentBuilder() {
     Column({ space: 4 }) {
       Row({ space: 4 }) {
-        MLable({ lable: "总胆固醇:" })
+        MLabel({ Label: "总胆固醇:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
@@ -71,11 +71,11 @@ export struct BloodLipidInputView {
           }
         }).layoutWeight(1)
 
-        MLable({ lable: UnitConstants.CHOLESTEROL_UNIT })
+        MLabel({ Label: UnitConstants.CHOLESTEROL_UNIT })
       }
 
       Row({ space: 4 }) {
-        MLable({ lable: "甘油三酯:" })
+        MLabel({ Label: "甘油三酯:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
@@ -85,11 +85,11 @@ export struct BloodLipidInputView {
           }
         }).layoutWeight(1)
 
-        MLable({ lable: UnitConstants.CHOLESTEROL_UNIT })
+        MLabel({ Label: UnitConstants.CHOLESTEROL_UNIT })
       }
 
       Row({ space: 4 }) {
-        MLable({ lable: "高密度脂蛋白:" })
+        MLabel({ Label: "高密度脂蛋白:" })
 
         MTextInput({
           text: this.hdlCholesterolText,
@@ -99,11 +99,11 @@ export struct BloodLipidInputView {
           }
         }).layoutWeight(1)
 
-        MLable({ lable: UnitConstants.CHOLESTEROL_UNIT })
+        MLabel({ Label: UnitConstants.CHOLESTEROL_UNIT })
       }
 
       Row({ space: 4 }) {
-        MLable({ lable: "低密度脂蛋白:" })
+        MLabel({ Label: "低密度脂蛋白:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
@@ -113,7 +113,7 @@ export struct BloodLipidInputView {
           }
         }).layoutWeight(1)
 
-        MLable({ lable: UnitConstants.CHOLESTEROL_UNIT })
+        MLabel({ Label: UnitConstants.CHOLESTEROL_UNIT })
       }
     }
   }

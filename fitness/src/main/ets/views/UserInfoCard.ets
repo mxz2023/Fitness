@@ -9,7 +9,7 @@
  */
 
 import { AppConstants, ColorConstants, FontSizeConstants, TypeUtils } from "@mxz/component"
-import { FLable } from "../components/FLable";
+import { FLabel } from "../components/FLabel";
 
 import { HealthCardDataType } from "../models/HealthDataModel";
 import { Gender } from "../models/UserDataModel";
@@ -45,7 +45,7 @@ export struct UserInfoCard {
           Row() {
             Row({ space: AppConstants.VIEW_SPACE }) {
               Row() {
-                FLable({ lable: "性别:" })
+                FLabel({ Label: "性别:" })
 
                 Text(`${this.nGender}`)
                   .fontSize(FontSizeConstants.Large)
@@ -54,7 +54,7 @@ export struct UserInfoCard {
               }.alignItems(VerticalAlign.Bottom)
 
               Row() {
-                FLable({ lable: "年龄:" })
+                FLabel({ Label: "年龄:" })
 
                 Text(`${this.nAge}`)
                   .fontSize(FontSizeConstants.Large)
@@ -62,12 +62,12 @@ export struct UserInfoCard {
                   .fontColor(ColorConstants.Text_333)
 
                 if (!TypeUtils.isEmptyNumber(this.nAge)) {
-                  FLable({ lable: " 岁" })
+                  FLabel({ Label: " 岁" })
                 }
               }.alignItems(VerticalAlign.Bottom)
 
               Row() {
-                FLable({ lable: "身高:" })
+                FLabel({ Label: "身高:" })
 
                 Text(`${this.nHeight}`)
                   .fontSize(FontSizeConstants.Large)
@@ -75,7 +75,7 @@ export struct UserInfoCard {
                   .fontColor(ColorConstants.Text_333)
 
                 if (!TypeUtils.isEmptyNumber(this.nHeight)) {
-                  FLable({ lable: " cm" })
+                  FLabel({ Label: " cm" })
                 }
               }.alignItems(VerticalAlign.Bottom)
             }.alignItems(VerticalAlign.Bottom)

@@ -9493,7 +9493,7 @@
    *     (3) Other new options will be used to create new component.
    *     (4) The index of the existing components will not be modified.
    *     That means their might be "hole" after the removal.
-   *     The new components are created first at those available index.
+   *     The new components are created first at those avaiLabel index.
    *
    * Mode "replaceAll":
    *     This mode try to support that reproduce an echarts instance from another
@@ -18353,7 +18353,7 @@
     };
   }
   /**
-   * Implements `TopologicalTravelable<any>` for `entity`.
+   * Implements `TopologicalTraveLabel<any>` for `entity`.
    *
    * Topological travel on Activity Network (Activity On Vertices).
    * Dependencies is defined in Model.prototype.dependencies, like ['xAxis', 'yAxis'].
@@ -18415,7 +18415,7 @@
       // If we do not have 'removeEdgeAndAdd', legendModel.mergeOption will
       // not be called, but only sereis.mergeOption is called. Thus legend
       // have no chance to update its local record about series (like which
-      // name of series is available in legend).
+      // name of series is avaiLabel in legend).
 
 
       function removeEdgeAndAdd(succComponentType) {
@@ -18430,14 +18430,14 @@
       each$9(fullNameList, function (name) {
         var thisItem = createDependencyGraphItem(graph, name);
         var originalDeps = thisItem.originalDeps = dependencyGetter(name);
-        var availableDeps = getAvailableDependencies(originalDeps, fullNameList);
-        thisItem.entryCount = availableDeps.length;
+        var avaiLabelDeps = getAvaiLabelDependencies(originalDeps, fullNameList);
+        thisItem.entryCount = avaiLabelDeps.length;
 
         if (thisItem.entryCount === 0) {
           noEntryList.push(name);
         }
 
-        each$9(availableDeps, function (dependentName) {
+        each$9(avaiLabelDeps, function (dependentName) {
           if (indexOf(thisItem.predecessor, dependentName) < 0) {
             thisItem.predecessor.push(dependentName);
           }
@@ -18466,12 +18466,12 @@
       return graph[name];
     }
 
-    function getAvailableDependencies(originalDeps, fullNameList) {
-      var availableDeps = [];
+    function getAvaiLabelDependencies(originalDeps, fullNameList) {
+      var avaiLabelDeps = [];
       each$9(originalDeps, function (dep) {
-        indexOf(fullNameList, dep) >= 0 && availableDeps.push(dep);
+        indexOf(fullNameList, dep) >= 0 && avaiLabelDeps.push(dep);
       });
-      return availableDeps;
+      return avaiLabelDeps;
     }
   }
 
@@ -19447,7 +19447,7 @@
    * the height would be as long as possible.
    */
 
-  function getAvailableSize(positionInfo, containerRect, margin) {
+  function getAvaiLabelSize(positionInfo, containerRect, margin) {
     var containerWidth = containerRect.width;
     var containerHeight = containerRect.height;
     var x = parsePercent(positionInfo.left, containerWidth);
@@ -21397,7 +21397,7 @@
   }
 
   mixin(GlobalModel, PaletteMixin);
-  var availableMethods = ['getDom', 'getZr', 'getWidth', 'getHeight', 'getDevicePixelRatio', 'dispatchAction', 'isSSR', 'isDisposed', 'on', 'off', 'getDataURL', 'getConnectedDataURL', // 'getModel',
+  var avaiLabelMethods = ['getDom', 'getZr', 'getWidth', 'getHeight', 'getDevicePixelRatio', 'dispatchAction', 'isSSR', 'isDisposed', 'on', 'off', 'getDataURL', 'getConnectedDataURL', // 'getModel',
   'getOption', // 'getViewOfComponentModel',
   // 'getViewOfSeriesModel',
   'getId', 'updateLabelLayout'];
@@ -21406,7 +21406,7 @@
   /** @class */
   function () {
     function ExtensionAPI(ecInstance) {
-      each$9(availableMethods, function (methodName) {
+      each$9(avaiLabelMethods, function (methodName) {
         this[methodName] = bind$1(ecInstance[methodName], ecInstance);
       }, this);
     }
@@ -23867,12 +23867,12 @@
     function ExternalSource() {}
 
     ExternalSource.prototype.getRawData = function () {
-      // Only built-in transform available.
+      // Only built-in transform avaiLabel.
       throw new Error('not supported');
     };
 
     ExternalSource.prototype.getRawDataItem = function (dataIndex) {
-      // Only built-in transform available.
+      // Only built-in transform avaiLabel.
       throw new Error('not supported');
     };
 
@@ -25759,7 +25759,7 @@
     /**
      *
      * Get a data store which can be shared across series.
-     * Only available for series.
+     * Only avaiLabel for series.
      *
      * @param seriesDimRequest Dimensions that are generated in series.
      *        Should have been sorted by `storeDimIndex` asc.
@@ -28404,7 +28404,7 @@
    * + The data query object, like:
    *   `{dataIndex: 123}`, `{dataType: 'link'}`, `{name: 'some'}`.
    * + The other query object (cmponent customized query), like:
-   *   `{element: 'some'}` (only available in custom series).
+   *   `{element: 'some'}` (only avaiLabel in custom series).
    *
    * Caveat: If a prop in the `query` object is `null/undefined`, it is the
    * same as there is no such prop in the `query` object.
@@ -40104,7 +40104,7 @@
       }
     }
     /**
-     * Squeeze to allow overlap if there is no more space available.
+     * Squeeze to allow overlap if there is no more space avaiLabel.
      * Let other overlapping strategy like hideOverlap do the job instead of keep exceeding the bounds.
      */
 
@@ -42147,7 +42147,7 @@
     BarSeriesModel.dependencies = ['grid', 'polar'];
     BarSeriesModel.defaultOption = inheritDefaultOption(BaseBarSeriesModel.defaultOption, {
       // If clipped
-      // Only available on cartesian2d
+      // Only avaiLabel on cartesian2d
       clip: true,
       roundCap: false,
       showBackground: false,
@@ -46658,15 +46658,15 @@
    * Set max width of each label, and then wrap each label to the max width.
    *
    * @param layout label layout
-   * @param availableWidth max width for the label to display
+   * @param avaiLabelWidth max width for the label to display
    * @param forceRecalculate recaculate the text layout even if the current width
-   * is smaller than `availableWidth`. This is useful when the text was previously
-   * wrapped by calling `constrainTextWidth` but now `availableWidth` changed, in
+   * is smaller than `avaiLabelWidth`. This is useful when the text was previously
+   * wrapped by calling `constrainTextWidth` but now `avaiLabelWidth` changed, in
    * which case, previous wrapping should be redo.
    */
 
 
-  function constrainTextWidth(layout, availableWidth, forceRecalculate) {
+  function constrainTextWidth(layout, avaiLabelWidth, forceRecalculate) {
     if (forceRecalculate === void 0) {
       forceRecalculate = false;
     }
@@ -46686,7 +46686,7 @@
 
     var oldOuterWidth = textRect.width + (bgColor ? 0 : paddingH);
 
-    if (availableWidth < oldOuterWidth || forceRecalculate) {
+    if (avaiLabelWidth < oldOuterWidth || forceRecalculate) {
       var oldHeight = textRect.height;
 
       if (overflow && overflow.match('break')) {
@@ -46694,23 +46694,23 @@
         // the bounding box without background.
         label.setStyle('backgroundColor', null); // Set constraining width
 
-        label.setStyle('width', availableWidth - paddingH); // This is the real bounding box of the text without padding.
+        label.setStyle('width', avaiLabelWidth - paddingH); // This is the real bounding box of the text without padding.
 
         var innerRect = label.getBoundingRect();
         label.setStyle('width', Math.ceil(innerRect.width));
         label.setStyle('backgroundColor', bgColor);
       } else {
-        var availableInnerWidth = availableWidth - paddingH;
-        var newWidth = availableWidth < oldOuterWidth // Current text is too wide, use `availableWidth` as max width.
-        ? availableInnerWidth : // Current available width is enough, but the text may have
-        // already been wrapped with a smaller available width.
-        forceRecalculate ? availableInnerWidth > layout.unconstrainedWidth // Current available is larger than text width,
+        var avaiLabelInnerWidth = avaiLabelWidth - paddingH;
+        var newWidth = avaiLabelWidth < oldOuterWidth // Current text is too wide, use `avaiLabelWidth` as max width.
+        ? avaiLabelInnerWidth : // Current avaiLabel width is enough, but the text may have
+        // already been wrapped with a smaller avaiLabel width.
+        forceRecalculate ? avaiLabelInnerWidth > layout.unconstrainedWidth // Current avaiLabel is larger than text width,
         // so don't constrain width (otherwise it may have
         // empty space in the background).
-        ? null // Current available is smaller than text width, so
-        // use the current available width as constraining
+        ? null // Current avaiLabel is smaller than text width, so
+        // use the current avaiLabel width as constraining
         // width.
-        : availableInnerWidth // Current available width is enough, so no need to
+        : avaiLabelInnerWidth // Current avaiLabel width is enough, so no need to
         // constrain.
         : null;
         label.setStyle('width', newWidth);
@@ -47615,7 +47615,7 @@
       symbolSize: 10,
       // symbolRotate: null,  // 图形旋转控制
       large: false,
-      // Available when large is true
+      // AvaiLabel when large is true
       largeThreshold: 2000,
       // cursor: null,
       itemStyle: {
@@ -48236,7 +48236,7 @@
     // min/max: [30, datamin, 60] or [20, datamin] or [datamin, 60]
     splitNumber: 5,
     minorTick: {
-      // Minor tick, not available for cateogry axis.
+      // Minor tick, not avaiLabel for cateogry axis.
       show: false,
       // Split number of minor ticks. The value should be in range of (0, 100)
       splitNumber: 5,
@@ -49304,7 +49304,7 @@
         otherAxisOnZeroOf = otherAxes[onZeroAxisIndex];
       }
     } else {
-      // Find the first available other axis.
+      // Find the first avaiLabel other axis.
       for (var idx in otherAxes) {
         if (otherAxes.hasOwnProperty(idx) && canOnZeroToAxis(otherAxes[idx]) // Consider that two Y axes on one value axis,
         // if both onZero, the two Y axes overlap.
@@ -49585,25 +49585,25 @@
         nameRotation = nameRotation * PI$2 / 180; // To radian.
       }
 
-      var axisNameAvailableWidth;
+      var axisNameAvaiLabelWidth;
 
       if (isNameLocationCenter(nameLocation)) {
         labelLayout = AxisBuilder.innerTextLayout(opt.rotation, nameRotation != null ? nameRotation : opt.rotation, // Adapt to axis.
         nameDirection);
       } else {
         labelLayout = endTextLayout(opt.rotation, nameLocation, nameRotation || 0, extent);
-        axisNameAvailableWidth = opt.axisNameAvailableWidth;
+        axisNameAvaiLabelWidth = opt.axisNameAvaiLabelWidth;
 
-        if (axisNameAvailableWidth != null) {
-          axisNameAvailableWidth = Math.abs(axisNameAvailableWidth / Math.sin(labelLayout.rotation));
-          !isFinite(axisNameAvailableWidth) && (axisNameAvailableWidth = null);
+        if (axisNameAvaiLabelWidth != null) {
+          axisNameAvaiLabelWidth = Math.abs(axisNameAvaiLabelWidth / Math.sin(labelLayout.rotation));
+          !isFinite(axisNameAvaiLabelWidth) && (axisNameAvaiLabelWidth = null);
         }
       }
 
       var textFont = textStyleModel.getFont();
       var truncateOpt = axisModel.get('nameTruncate', true) || {};
       var ellipsis = truncateOpt.ellipsis;
-      var maxWidth = retrieve(opt.nameTruncateMaxWidth, truncateOpt.maxWidth, axisNameAvailableWidth);
+      var maxWidth = retrieve(opt.nameTruncateMaxWidth, truncateOpt.maxWidth, axisNameAvaiLabelWidth);
       var textEl = new ZRText({
         x: pos[0],
         y: pos[1],
@@ -53882,7 +53882,7 @@
     };
 
     RoamController.prototype._mousemoveHandler = function (e) {
-      if (!this._dragging || !isAvailableBehavior('moveOnMouseMove', e, this._opt) || e.gestureEvent === 'pinch' || isTaken(this._zr, 'globalPan')) {
+      if (!this._dragging || !isAvaiLabelBehavior('moveOnMouseMove', e, this._opt) || e.gestureEvent === 'pinch' || isTaken(this._zr, 'globalPan')) {
         return;
       }
 
@@ -53902,7 +53902,7 @@
         oldY: oldY,
         newX: x,
         newY: y,
-        isAvailableBehavior: null
+        isAvaiLabelBehavior: null
       });
     };
 
@@ -53913,8 +53913,8 @@
     };
 
     RoamController.prototype._mousewheelHandler = function (e) {
-      var shouldZoom = isAvailableBehavior('zoomOnMouseWheel', e, this._opt);
-      var shouldMove = isAvailableBehavior('moveOnMouseWheel', e, this._opt);
+      var shouldZoom = isAvaiLabelBehavior('zoomOnMouseWheel', e, this._opt);
+      var shouldMove = isAvaiLabelBehavior('moveOnMouseWheel', e, this._opt);
       var wheelDelta = e.wheelDelta;
       var absWheelDeltaDelta = Math.abs(wheelDelta);
       var originX = e.offsetX;
@@ -53942,7 +53942,7 @@
           scale: scale,
           originX: originX,
           originY: originY,
-          isAvailableBehavior: null
+          isAvaiLabelBehavior: null
         });
       }
 
@@ -53955,7 +53955,7 @@
           scrollDelta: scrollDelta,
           originX: originX,
           originY: originY,
-          isAvailableBehavior: null
+          isAvaiLabelBehavior: null
         });
       }
     };
@@ -53970,7 +53970,7 @@
         scale: scale,
         originX: e.pinchX,
         originY: e.pinchY,
-        isAvailableBehavior: null
+        isAvaiLabelBehavior: null
       });
     };
 
@@ -53990,7 +53990,7 @@
   function trigger$1(controller, eventName, behaviorToCheck, e, contollerEvent) {
     // Also provide behavior checker for event listener, for some case that
     // multiple components share one listener.
-    contollerEvent.isAvailableBehavior = bind$1(isAvailableBehavior, null, behaviorToCheck, e); // TODO should not have type issue.
+    contollerEvent.isAvaiLabelBehavior = bind$1(isAvaiLabelBehavior, null, behaviorToCheck, e); // TODO should not have type issue.
 
     controller.trigger(eventName, contollerEvent);
   } // settings: {
@@ -54001,7 +54001,7 @@
   // The value can be: true / false / 'shift' / 'ctrl' / 'alt'.
 
 
-  function isAvailableBehavior(behaviorToCheck, e, settings) {
+  function isAvaiLabelBehavior(behaviorToCheck, e, settings) {
     var setting = settings[behaviorToCheck];
     return !behaviorToCheck || setting && (!isString(setting) || e.event[setting + 'Key']);
   }
@@ -55113,7 +55113,7 @@
       return this.root.getNodeById(name);
     };
     /**
-     * Update item available by list,
+     * Update item avaiLabel by list,
      * when list has been performed options like 'filterSelf' or 'map'.
      */
 
@@ -56271,7 +56271,7 @@
       var lastX = 0;
       var emptyItemWidth = layoutParam.emptyItemWidth;
       var height = seriesModel.get(['breadcrumb', 'height']);
-      var availableSize = getAvailableSize(layoutParam.pos, layoutParam.box);
+      var avaiLabelSize = getAvaiLabelSize(layoutParam.pos, layoutParam.box);
       var totalWidth = layoutParam.totalWidth;
       var renderList = layoutParam.renderList;
       var emphasisItemStyle = emphasisModel.getModel('itemStyle').getItemStyle();
@@ -56282,7 +56282,7 @@
         var itemWidth = item.width;
         var text = item.text; // Hdie text and shorten width if necessary.
 
-        if (totalWidth > availableSize.width) {
+        if (totalWidth > avaiLabelSize.width) {
           totalWidth -= itemWidth - emptyItemWidth;
           itemWidth = emptyItemWidth;
           text = null;
@@ -57096,7 +57096,7 @@
       // storage, and set styles.
       return;
     } // -------------------------------------------------------------------
-    // Start of closure variables available in "Procedures in renderNode".
+    // Start of closure variables avaiLabel in "Procedures in renderNode".
 
 
     var thisLayout = thisNode.getLayout();
@@ -57123,7 +57123,7 @@
     var itemStyleEmphasisModel = nodeModel.getModel(['emphasis', 'itemStyle']);
     var itemStyleBlurModel = nodeModel.getModel(['blur', 'itemStyle']);
     var itemStyleSelectModel = nodeModel.getModel(['select', 'itemStyle']);
-    var borderRadius = itemStyleNormalModel.get('borderRadius') || 0; // End of closure ariables available in "Procedures in renderNode".
+    var borderRadius = itemStyleNormalModel.get('borderRadius') || 0; // End of closure ariables avaiLabel in "Procedures in renderNode".
     // -----------------------------------------------------------------
     // Node group
 
@@ -57473,7 +57473,7 @@
       return bind$1(this._normalizeData, this);
     };
     /**
-     * List available visual types.
+     * List avaiLabel visual types.
      *
      * @public
      * @return {Array.<string>}
@@ -60226,7 +60226,7 @@
     return parser.parse(xml, opt);
   }
   /**
-   * "region available" means that: enable users to set attribute `name="xxx"` on those tags
+   * "region avaiLabel" means that: enable users to set attribute `name="xxx"` on those tags
    * to make it be a region.
    * 1. region styles and its label styles can be defined in echarts opton:
    * ```js
@@ -60247,7 +60247,7 @@
    */
 
 
-  var REGION_AVAILABLE_SVG_TAG_MAP = createHashMap(['rect', 'circle', 'line', 'ellipse', 'polygon', 'polyline', 'path', // <text> <tspan> are also enabled because some SVG might paint text itself,
+  var REGION_AVAILabel_SVG_TAG_MAP = createHashMap(['rect', 'circle', 'line', 'ellipse', 'polygon', 'polyline', 'path', // <text> <tspan> are also enabled because some SVG might paint text itself,
   // but still need to trigger events or tooltip.
   'text', 'tspan', // <g> is also enabled because this case: if multiple tags share one name
   // and need label displayed, every tags will display the name, which is not
@@ -60421,7 +60421,7 @@
       }));
       var named = [];
       each$9(result.named, function (namedItem) {
-        if (REGION_AVAILABLE_SVG_TAG_MAP.get(namedItem.svgNodeTagLower) != null) {
+        if (REGION_AVAILabel_SVG_TAG_MAP.get(namedItem.svgNodeTagLower) != null) {
           named.push(namedItem);
           setSilent(namedItem.el);
         }
@@ -64757,7 +64757,7 @@
         trailLength: 0.2
       },
       large: false,
-      // Available when large is true
+      // AvaiLabel when large is true
       largeThreshold: 2000,
       polyline: false,
       clip: true,
@@ -69906,10 +69906,10 @@
 
     LegendModel.prototype._updateData = function (ecModel) {
       var potentialData = [];
-      var availableNames = [];
+      var avaiLabelNames = [];
       ecModel.eachRawSeries(function (seriesModel) {
         var seriesName = seriesModel.name;
-        availableNames.push(seriesName);
+        availabelNames.push(seriesName);
         var isPotential;
 
         if (seriesModel.legendVisualProvider) {
@@ -69917,7 +69917,7 @@
           var names = provider.getAllNames();
 
           if (!ecModel.isSeriesFiltered(seriesModel)) {
-            availableNames = availableNames.concat(names);
+            availabelNames = availabelNames.concat(names);
           }
 
           if (names.length) {
@@ -69938,7 +69938,7 @@
        * @private
        */
 
-      this._availableNames = availableNames; // If legend.data is not specified in option, use availableNames as data,
+      this._availabelNames = availabelNames; // If legend.data is not specified in option, use availabelNames as data,
       // which is convenient for user preparing option.
 
       var rawData = this.get('data') || potentialData;
@@ -70027,7 +70027,7 @@
 
     LegendModel.prototype.isSelected = function (name) {
       var selected = this.option.selected;
-      return !(selected.hasOwnProperty(name) && !selected[name]) && indexOf(this._availableNames, name) >= 0;
+      return !(selected.hasOwnProperty(name) && !selected[name]) && indexOf(this._availabelNames, name) >= 0;
     };
 
     LegendModel.prototype.getOrient = function () {
@@ -70848,15 +70848,15 @@
     installLegendAction(registers);
   }
 
-  var ScrollableLegendModel =
+  var ScrollabelLegendModel =
   /** @class */
   function (_super) {
-    __extends(ScrollableLegendModel, _super);
+    __extends(ScrollabelLegendModel, _super);
 
-    function ScrollableLegendModel() {
+    function ScrollabelLegendModel() {
       var _this = _super !== null && _super.apply(this, arguments) || this;
 
-      _this.type = ScrollableLegendModel.type;
+      _this.type = ScrollabelLegendModel.type;
       return _this;
     }
     /**
@@ -70864,11 +70864,11 @@
      */
 
 
-    ScrollableLegendModel.prototype.setScrollDataIndex = function (scrollDataIndex) {
+    ScrollabelLegendModel.prototype.setScrollDataIndex = function (scrollDataIndex) {
       this.option.scrollDataIndex = scrollDataIndex;
     };
 
-    ScrollableLegendModel.prototype.init = function (option, parentModel, ecModel) {
+    ScrollabelLegendModel.prototype.init = function (option, parentModel, ecModel) {
       var inputPositionParams = getLayoutParams(option);
 
       _super.prototype.init.call(this, option, parentModel, ecModel);
@@ -70880,14 +70880,14 @@
      */
 
 
-    ScrollableLegendModel.prototype.mergeOption = function (option, ecModel) {
+    ScrollabelLegendModel.prototype.mergeOption = function (option, ecModel) {
       _super.prototype.mergeOption.call(this, option, ecModel);
 
       mergeAndNormalizeLayoutParams(this, this.option, option);
     };
 
-    ScrollableLegendModel.type = 'legend.scroll';
-    ScrollableLegendModel.defaultOption = inheritDefaultOption(LegendModel.defaultOption, {
+    ScrollabelLegendModel.type = 'legend.scroll';
+    ScrollabelLegendModel.defaultOption = inheritDefaultOption(LegendModel.defaultOption, {
       scrollDataIndex: 0,
       pageButtonItemGap: 5,
       pageButtonGap: null,
@@ -70905,7 +70905,7 @@
       },
       animationDurationUpdate: 800
     });
-    return ScrollableLegendModel;
+    return ScrollabelLegendModel;
   }(LegendModel); // Do not `ignoreSize` to enable setting {left: 10, right: 10}.
 
 
@@ -70923,21 +70923,21 @@
   var WH = ['width', 'height'];
   var XY = ['x', 'y'];
 
-  var ScrollableLegendView =
+  var ScrollabelLegendView =
   /** @class */
   function (_super) {
-    __extends(ScrollableLegendView, _super);
+    __extends(ScrollabelLegendView, _super);
 
-    function ScrollableLegendView() {
+    function ScrollabelLegendView() {
       var _this = _super !== null && _super.apply(this, arguments) || this;
 
-      _this.type = ScrollableLegendView.type;
+      _this.type = ScrollabelLegendView.type;
       _this.newlineDisabled = true;
       _this._currentIndex = 0;
       return _this;
     }
 
-    ScrollableLegendView.prototype.init = function () {
+    ScrollabelLegendView.prototype.init = function () {
       _super.prototype.init.call(this);
 
       this.group.add(this._containerGroup = new Group());
@@ -70951,7 +70951,7 @@
      */
 
 
-    ScrollableLegendView.prototype.resetInner = function () {
+    ScrollabelLegendView.prototype.resetInner = function () {
       _super.prototype.resetInner.call(this);
 
       this._controllerGroup.removeAll();
@@ -70965,7 +70965,7 @@
      */
 
 
-    ScrollableLegendView.prototype.renderInner = function (itemAlign, legendModel, ecModel, api, selector, orient, selectorPosition) {
+    ScrollabelLegendView.prototype.renderInner = function (itemAlign, legendModel, ecModel, api, selector, orient, selectorPosition) {
       var self = this; // Render content items.
 
       _super.prototype.renderInner.call(this, itemAlign, legendModel, ecModel, api, selector, orient, selectorPosition);
@@ -71012,7 +71012,7 @@
      */
 
 
-    ScrollableLegendView.prototype.layoutInner = function (legendModel, itemAlign, maxSize, isFirstRender, selector, selectorPosition) {
+    ScrollabelLegendView.prototype.layoutInner = function (legendModel, itemAlign, maxSize, isFirstRender, selector, selectorPosition) {
       var selectorGroup = this.getSelectorGroup();
       var orientIdx = legendModel.getOrient().index;
       var wh = WH[orientIdx];
@@ -71050,7 +71050,7 @@
       return mainRect;
     };
 
-    ScrollableLegendView.prototype._layoutContentAndController = function (legendModel, isFirstRender, maxSize, orientIdx, wh, hw, yx, xy) {
+    ScrollabelLegendView.prototype._layoutContentAndController = function (legendModel, isFirstRender, maxSize, orientIdx, wh, hw, yx, xy) {
       var contentGroup = this.getContentGroup();
       var containerGroup = this._containerGroup;
       var controllerGroup = this._controllerGroup; // Place items in contentGroup.
@@ -71143,7 +71143,7 @@
       return mainRect;
     };
 
-    ScrollableLegendView.prototype._pageGo = function (to, legendModel, api) {
+    ScrollabelLegendView.prototype._pageGo = function (to, legendModel, api) {
       var scrollDataIndex = this._getPageInfo(legendModel)[to];
 
       scrollDataIndex != null && api.dispatchAction({
@@ -71153,7 +71153,7 @@
       });
     };
 
-    ScrollableLegendView.prototype._updatePageInfoView = function (legendModel, pageInfo) {
+    ScrollabelLegendView.prototype._updatePageInfoView = function (legendModel, pageInfo) {
       var controllerGroup = this._controllerGroup;
       each$9(['pagePrev', 'pageNext'], function (name) {
         var key = name + 'DataIndex';
@@ -71185,7 +71185,7 @@
      */
 
 
-    ScrollableLegendView.prototype._getPageInfo = function (legendModel) {
+    ScrollabelLegendView.prototype._getPageInfo = function (legendModel) {
       var scrollDataIndex = legendModel.get('scrollDataIndex', true);
       var contentGroup = this.getContentGroup();
       var containerRectSize = this._containerGroup.__rectSize;
@@ -71289,7 +71289,7 @@
       }
     };
 
-    ScrollableLegendView.prototype._findTargetItemIndex = function (targetDataIndex) {
+    ScrollabelLegendView.prototype._findTargetItemIndex = function (targetDataIndex) {
       if (!this._showController) {
         return 0;
       }
@@ -71315,8 +71315,8 @@
       return index != null ? index : defaultIndex;
     };
 
-    ScrollableLegendView.type = 'legend.scroll';
-    return ScrollableLegendView;
+    ScrollabelLegendView.type = 'legend.scroll';
+    return ScrollabelLegendView;
   }(LegendView);
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -71361,7 +71361,7 @@
   */
 
 
-  function installScrollableLegendAction(registers) {
+  function installScrollabelLegendAction(registers) {
     /**
      * @event legendScroll
      * @type {Object}
@@ -71382,9 +71382,9 @@
 
   function install$b(registers) {
     use(install$c);
-    registers.registerComponentModel(ScrollableLegendModel);
-    registers.registerComponentView(ScrollableLegendView);
-    installScrollableLegendAction(registers);
+    registers.registerComponentModel(ScrollabelLegendModel);
+    registers.registerComponentView(ScrollabelLegendView);
+    installScrollabelLegendAction(registers);
   }
 
   use(install$b);
@@ -75718,7 +75718,7 @@
   }
   /**
    * Find the first target coordinate system.
-   * Available after model built.
+   * Availabel after model built.
    *
    * @return Like {
    *                  grid: [
@@ -76461,7 +76461,7 @@
         coordSysRecord.dataZoomInfoMap.each(function (dzInfo) {
           // Check whether the behaviors (zoomOnMouseWheel, moveOnMouseMove,
           // moveOnMouseWheel, ...) enabled.
-          if (!event.isAvailableBehavior(dzInfo.model.option)) {
+          if (!event.isAvailabelBehavior(dzInfo.model.option)) {
             return;
           }
 
@@ -78659,7 +78659,7 @@
           // some micro front-end framework， window maybe is a Proxy
           view: document.defaultView,
           bubbles: true,
-          cancelable: false
+          cancelabel: false
         });
         $a.dispatchEvent(evt);
       } // IE or old Edge
@@ -78746,11 +78746,11 @@
 
     MagicType.prototype.getIcons = function () {
       var model = this.model;
-      var availableIcons = model.get('icon');
+      var availabelIcons = model.get('icon');
       var icons = {};
       each$9(model.get('type'), function (type) {
-        if (availableIcons[type]) {
-          icons[type] = availableIcons[type];
+        if (availabelIcons[type]) {
+          icons[type] = availabelIcons[type];
         }
       });
       return icons;
@@ -80580,7 +80580,7 @@
 
   function axisConvert(axisNameIndex, to, coordSys, rangeOrCoordRange) {
     {
-      assert(coordSys.type === 'cartesian2d', 'lineX/lineY brush is available only in cartesian2d.');
+      assert(coordSys.type === 'cartesian2d', 'lineX/lineY brush is availabel only in cartesian2d.');
     }
     var axis = coordSys.getAxis(['x', 'y'][axisNameIndex]);
     var values = formatMinMax(map$1([0, 1], function (i) {

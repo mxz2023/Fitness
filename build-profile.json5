@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "/Users/gemini/.ohos/config/default_Fitness_dhCvdLH-aMoa5sfl1aFGCepluRbZ3T10pWjRbk9Cc4s=.cer",
+          "certpath": "/Users/zhongyafeng/.ohos/config/default_Fitness_SKTrYEiSdT0SZmJ_6zFwwoALpDLTd6M6pFyTF7dQYH8=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BA30A21AB85C390B9A24B27810273A1F9A32CCA91582AD18E845347D96498D93FE80D3A6816B201",
-          "profile": "/Users/gemini/.ohos/config/default_Fitness_dhCvdLH-aMoa5sfl1aFGCepluRbZ3T10pWjRbk9Cc4s=.p7b",
+          "keyPassword": "0000001AD077AC900870C612333E7B54F3B89E9D6203C0976FFF9A1154CD98CC948E5200D570B8D411B5",
+          "profile": "/Users/zhongyafeng/.ohos/config/default_Fitness_SKTrYEiSdT0SZmJ_6zFwwoALpDLTd6M6pFyTF7dQYH8=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/gemini/.ohos/config/default_Fitness_dhCvdLH-aMoa5sfl1aFGCepluRbZ3T10pWjRbk9Cc4s=.p12",
-          "storePassword": "0000001BF3CD615C1BF802FAA414147A4226E6808F399FB6D61C5F70D7AB87B1871844E740D338D7CB9871"
+          "storeFile": "/Users/zhongyafeng/.ohos/config/default_Fitness_SKTrYEiSdT0SZmJ_6zFwwoALpDLTd6M6pFyTF7dQYH8=.p12",
+          "storePassword": "0000001AB37B4B686AA1CD42E181C9D295925B06CEAFC37E0914C4E20409F7B04FC16FB33CF7EBB27785"
         }
       }
     ],
@@ -58,11 +58,15 @@
     },
     {
       "name": "component",
-      "srcPath": "../../Modules/Component/component",
+      "srcPath": "../../Modules/component",
     },
     {
-      "name": "logger",
-      "srcPath": "../../Modules/Logger/logger",
+      "name": "common",
+      "srcPath": "../../Modules/common",
+    },
+    {
+      "name": "router",
+      "srcPath": "../../Modules/router",
     }
   ]
 }

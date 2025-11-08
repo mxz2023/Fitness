@@ -9,7 +9,7 @@
  */
 
 import { MButton, MTextInput, MTitleBar, AppConstants, ColorConstants } from "@mxz/component"
-import { FLable as MLable } from '../../components/FLable'
+import { FLabel as MLabel } from '../../components/FLabel'
 
 import { WeightData } from "../../models/HealthDataModel";
 import { UnitConstants } from '../../common/HealthTypeDefine';
@@ -47,7 +47,7 @@ export struct WeightInputView {
     Column({ space: 4 }) {
 
       Row({ space: 4 }) {
-        MLable({ lable: "体重:" })
+        MLabel({ Label: "体重:" })
 
         MTextInput({
           type: InputType.NUMBER_DECIMAL,
@@ -66,7 +66,7 @@ export struct WeightInputView {
           }
         }).layoutWeight(1)
 
-        MLable({ lable: UnitConstants.WEIGHT_UNIT })
+        MLabel({ Label: UnitConstants.WEIGHT_UNIT })
       }
     }
   }
