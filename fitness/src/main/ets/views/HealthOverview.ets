@@ -44,6 +44,7 @@ import { BloodSugarInputDialog } from '../dialogs/BloodSugarInputDialog';
 import { UricAcidInputDialog } from '../dialogs/UricAcidInputDialog';
 import { BloodPressureInputDialog } from '../dialogs/BloodPressureInputDialog';
 import { BloodLipidInputDialog } from '../dialogs/BloodLipidInputDialog';
+import { GlobalContext } from '@mxz/common';
 
 
 interface ToolItem {
@@ -56,20 +57,6 @@ interface ToolItem {
 @ComponentV2
 export struct HealthPage {
   private pageInfos: NavPathStack = MRouter.getInstance().getNavStack();
-
-  aboutToAppear(): void {
-    // 获取默认 display 对象
-    try {
-      const defaultDisplay = display.getDefaultDisplaySync();
-      const blockThis = this
-      defaultDisplay.on('availableAreaChange', () => {
-        const displayWidth = defaultDisplay.width; // 屏幕宽度
-        const displayHeight = defaultDisplay.height; // 屏幕高度
-      });
-    } catch (error) {
-      // TODO: Implement error handling.
-    }
-  }
 
   build() {
     RelativeContainer() {
@@ -108,8 +95,7 @@ export struct HealthOverview {
   // 屏幕适配参数
   @Local private columnsTemplate: string = '1fr 1fr'
   @Local private dialogAlignment: DialogAlignment = DialogAlignment.Bottom
-  private curWidth?:Length;
-
+  private curWidth?: Length;
   private userInfoVM?: UserViewModel
   private weightDataVM?: WeightViewModel
   private bloodSugarVM?: BloodSugarViewModel
@@ -213,12 +199,19 @@ export struct HealthOverview {
 
     // 获取默认 display 对象
     try {
-      const defaultDisplay = display.getDefaultDisplaySync();
-      defaultDisplay.on('availableAreaChange', () => {
-        const displayWidth = this.getUIContext().px2vp(defaultDisplay.width);   // 屏幕宽度
-        const displayHeight = this.getUIContext().px2vp(defaultDisplay.height); // 屏幕高度
-        this.updateWindowSizeChange(displayWidth, displayHeight)
-      });
+      // const defaultDisplay = display.getDefaultDisplaySync();
+      // defaultDisplay.on('availableAreaChange', (rect) => {
+      //   const displayWidth = this.getUIContext().px2vp(rect.width);   // 屏幕宽度
+      //   const displayHeight = this.getUIContext().px2vp(rect.height); // 屏幕高度
+      //   this.updateWindowSizeChange(displayWidth, displayHeight)
+      // });
+
+      // const windowClass = GlobalContext.getWindowClass()
+      // windowClass.on('windowSizeChange', (size) => {
+      //   const displayWidth = this.getUIContext().px2vp(size.width); // 屏幕宽度
+      //   const displayHeight = this.getUIContext().px2vp(size.height); // 屏幕高度
+      //   this.updateWindowSizeChange(displayWidth, displayHeight)
+      // })
     } catch (error) {
       // TODO: Implement error handling.
     }
