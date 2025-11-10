@@ -215,8 +215,8 @@ export struct HealthOverview {
     try {
       const defaultDisplay = display.getDefaultDisplaySync();
       defaultDisplay.on('availableAreaChange', () => {
-        const displayWidth = defaultDisplay.width;   // 屏幕宽度
-        const displayHeight = defaultDisplay.height; // 屏幕高度
+        const displayWidth = this.getUIContext().px2vp(defaultDisplay.width);   // 屏幕宽度
+        const displayHeight = this.getUIContext().px2vp(defaultDisplay.height); // 屏幕高度
         this.updateWindowSizeChange(displayWidth, displayHeight)
       });
     } catch (error) {
