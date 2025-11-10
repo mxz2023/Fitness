@@ -202,7 +202,7 @@ export struct BaseInputDialog {
       })
     }
     .width('100%')
-    .height(400)
+    .height(350)
     .constraintSize({
       maxWidth: 500
     })

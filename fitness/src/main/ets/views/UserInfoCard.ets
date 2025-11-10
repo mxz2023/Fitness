@@ -21,7 +21,7 @@ export struct UserInfoCard {
   @Param nAge: number = 0; // 年龄
   @Param nGender: Gender = Gender.UNKNOWN;
   @Param nHeight: number = 0; // 身高，单位:cm
-  @Event handleClick: (type: HealthCardDataType) => void
+  @Event handleClick: () => void
 
   build() {
     RelativeContainer() {
@@ -29,7 +29,7 @@ export struct UserInfoCard {
         Image($r('app.media.bgImg')).height('100%')
       }.width('100%').justifyContent(FlexAlign.End)
 
-      Column({ space: AppConstants.VIEW_SPACE/2 }) {
+      Column({ space: AppConstants.VIEW_SPACE / 2 }) {
         Row() {
           Text(this.nickName.length > 0 ? this.nickName : "请设置基本信息")
             .fontSize(FontSizeConstants.LargeTitle)
@@ -98,7 +98,7 @@ export struct UserInfoCard {
       offsetY: 2
     })
     .onClick(() => {
-      this.handleClick(HealthCardDataType.BaseInfo)
+      this.handleClick()
     })
   }
 }

@@ -8,7 +8,8 @@ import {
   NavigationTitleBuilder,
   AppConstants,
   ColorConstants,
-  getAppPathStack
+  getAppPathStack,
+  FontSizeConstants
 } from '@mxz/component'
 import {
   WeightData,
@@ -23,6 +24,7 @@ import { MChart } from '../thirds/MChart';
 import { formatDate, getHealthStatusColor } from '../func/HealthUtils';
 import { StorageUtils } from '../func/StorageUtils';
 import { HealthDataType } from '../common/CommonDefine';
+import { MRouter } from '@mxz/router';
 
 interface ChartDataItem {
   x: string;
@@ -39,6 +41,7 @@ struct HealthHistoryPage {
   @Local private isLoading: boolean = true;
   @Local options: ChartOptions = {};
   private storageUtils: StorageUtils = StorageUtils.getInstance(this.getUIContext().getHostContext());
+  private pageInfos: NavPathStack = MRouter.getInstance().getNavStack();
 
   aboutToAppear() {
     this.loadHistoryData();
@@ -377,6 +380,25 @@ struct HealthHistoryPage {
   build() {
     NavDestination() {
       RelativeContainer() {
+        Row() {
+          NavigationTitleBuilder(this.pageInfos, {
+            title: {
+              text: "历史记录",
+              fontSize: FontSizeConstants.LargeTitle,
+              fontWeight: FontWeight.Medium
+            },
+            height: AppConstants.NAV_HEIGHT,
+            canBack: true
+          })
+        }
+        .id("__nav_bar__")
+        .alignRules({
+          top: { anchor: '__container__', align: VerticalAlign.Top },
+          left: { anchor: '__container__', align: HorizontalAlign.Start },
+          right: { anchor: '__container__', align: HorizontalAlign.End }
+        })
+
+
         if (this.isLoading) {
           Column() {
             LoadingProgress()
@@ -385,7 +407,7 @@ struct HealthHistoryPage {
               .color('#2196F3')
           }
           .alignRules({
-            top: { anchor: '__container__', align: VerticalAlign.Bottom },
+            top: { anchor: '__nav_bar__', align: VerticalAlign.Bottom },
             bottom: { anchor: '__container__', align: VerticalAlign.Bottom },
             left: { anchor: '__container__', align: HorizontalAlign.Start },
             right: { anchor: '__container__', align: HorizontalAlign.End }
@@ -407,7 +429,7 @@ struct HealthHistoryPage {
             }).width('50%')
           }
           .alignRules({
-            top: { anchor: '__container__', align: VerticalAlign.Top },
+            top: { anchor: '__nav_bar__', align: VerticalAlign.Bottom },
             bottom: { anchor: '__container__', align: VerticalAlign.Bottom },
             left: { anchor: '__container__', align: HorizontalAlign.Start },
             right: { anchor: '__container__', align: HorizontalAlign.End }
@@ -433,7 +455,7 @@ struct HealthHistoryPage {
           .padding(AppConstants.VIEW_PADDING)
           .id("__top__")
           .alignRules({
-            top: { anchor: '__container__', align: VerticalAlign.Top },
+            top: { anchor: '__nav_bar__', align: VerticalAlign.Bottom },
             left: { anchor: '__container__', align: HorizontalAlign.Start },
             right: { anchor: '__container__', align: HorizontalAlign.End }
           })
@@ -513,19 +535,21 @@ struct HealthHistoryPage {
       .height('100%')
       .backgroundColor('#F5F5F5')
     }
-    .title({
-      builder: NavigationTitleBuilder(getAppPathStack(), {
-        title: {
-          text: "历史记录",
-          fontColor: "#000000"
-        },
-        subTitle: {
-          text: this.getTitle()
-        },
-        height: 45
-      }),
-      height: 58
-    })
+    // .title({
+    //   builder: NavigationTitleBuilder(getAppPathStack(), {
+    //     title: {
+    //       text: "历史记录",
+    //       fontColor: "#000000"
+    //     },
+    //     subTitle: {
+    //       text: this.getTitle()
+    //     },
+    //     height: 45
+    //   }),
+    //   height: 58
+    // })
+    .hideTitleBar(true)
+    .hideBackButton(true)
     .width('100%')
     .height('100%')
     .onReady((ctx: NavDestinationContext) => {

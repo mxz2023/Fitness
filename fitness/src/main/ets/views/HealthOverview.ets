@@ -2,7 +2,8 @@
  * 健康数据概览页面
  * 基于 Figma 设计实现的健康指标卡片式布局
  */
-import { KeyboardAvoidMode, window } from '@kit.ArkUI';
+import { KeyboardAvoidMode } from '@kit.ArkUI';
+import { display } from '@kit.ArkUI';
 
 import {
   MIconButton,
@@ -22,7 +23,6 @@ import {
   BloodSugarData,
   UricAcidData,
   BloodLipidData,
-  MeasurementType,
   HealthCardData,
   HealthCardDataType
 } from '../models/HealthDataModel';
@@ -57,6 +57,20 @@ interface ToolItem {
 export struct HealthPage {
   private pageInfos: NavPathStack = MRouter.getInstance().getNavStack();
 
+  aboutToAppear(): void {
+    // 获取默认 display 对象
+    try {
+      const defaultDisplay = display.getDefaultDisplaySync();
+      const blockThis = this
+      defaultDisplay.on('availableAreaChange', () => {
+        const displayWidth = defaultDisplay.width; // 屏幕宽度
+        const displayHeight = defaultDisplay.height; // 屏幕高度
+      });
+    } catch (error) {
+      // TODO: Implement error handling.
+    }
+  }
+
   build() {
     RelativeContainer() {
       NavigationTitleBuilder(this.pageInfos, {
@@ -86,12 +100,16 @@ export struct HealthPage {
 @ComponentV2
 export struct HealthOverview {
   @Local private isLoading: boolean = true
-  @Local private columnsTemplate: string = '1fr 1fr'
   @Local private showQuick: boolean = true // 显示快速入口
   @Local private showExpandedButtons: boolean = false // 是否展开了
   @Local private buttonScale: number = 0
   @Local private buttonOpacity: number = 0
   @Provider("DashBoardStyle") dashBoardStyle: MDashBoardStyle = MDashBoardStyle.DashBoardNormal
+  // 屏幕适配参数
+  @Local private columnsTemplate: string = '1fr 1fr'
+  @Local private dialogAlignment: DialogAlignment = DialogAlignment.Bottom
+  private curWidth?:Length;
+
   private userInfoVM?: UserViewModel
   private weightDataVM?: WeightViewModel
   private bloodSugarVM?: BloodSugarViewModel
@@ -99,6 +117,12 @@ export struct HealthOverview {
   private uricAcidVM?: UricAcidViewModel
   private bloodLipidVM?: BloodLipidViewModel
   private quickTools: Array<ToolItem> = []
+  private baseDialogController?: CustomDialogController;
+  private weightDialogController?: CustomDialogController;
+  private bloodSugarDialogController?: CustomDialogController;
+  private bloodPressDialogController?: CustomDialogController;
+  private uricAcidDialogController?: CustomDialogController;
+  private bloodLipidDialogController?: CustomDialogController;
 
   @Monitor('showType')
   onShowTypeChange(monitor: IMonitor) {
@@ -112,8 +136,94 @@ export struct HealthOverview {
     }
   }
 
+  // 窗口改变
+  updateWindowSizeChange(displayWidth?: Length, displayHeight?: Length) {
+    const curWidth = displayWidth
+    if (curWidth == undefined) {
+      return
+    }
+    if (this.curWidth == curWidth) {
+      return
+    }
+    this.curWidth = curWidth
+    // https://developer.huawei.com/consumer/cn/doc/design-guides/design-layout-basics-0000001795579413#section6149141345712
+    // P60: 374x826
+    // X5: 346x802 / 712x798
+    // PuraX: 326x326 / 440x706
+    // MatePad: 1280x800
+    if (curWidth > 1000) {
+      this.columnsTemplate = '1fr 1fr 1fr 1fr'
+      this.dashBoardStyle = MDashBoardStyle.DashBoardBig
+      this.dialogAlignment = DialogAlignment.Center
+    } else if (curWidth > 600) {
+      this.columnsTemplate = '1fr 1fr 1fr'
+      this.dashBoardStyle = MDashBoardStyle.DashBoardBig
+      this.dialogAlignment = DialogAlignment.Center
+    } else if (curWidth > 350) {
+      this.columnsTemplate = '1fr 1fr'
+      this.dashBoardStyle = MDashBoardStyle.DashBoardNormal
+      this.dialogAlignment = DialogAlignment.Bottom
+    } else {
+      this.columnsTemplate = '1fr 1fr'
+      this.dashBoardStyle = MDashBoardStyle.DashBoardSmall
+      this.dialogAlignment = DialogAlignment.Bottom
+    }
+
+    // 修改 dialog 展示
+    if (this.baseDialogController) {
+      const currentState: PromptActionCommonState = this.baseDialogController.getState();
+      if (currentState === 3) {
+        this.showBaseInputDialog()
+      }
+    }
+    if (this.weightDialogController) {
+      const currentState: PromptActionCommonState = this.weightDialogController.getState();
+      if (currentState === 3) {
+        this.showWeightDialog()
+      }
+    }
+    if (this.bloodSugarDialogController) {
+      const currentState: PromptActionCommonState = this.bloodSugarDialogController.getState();
+      if (currentState === 3) {
+        this.showBloodSugarDialog()
+      }
+    }
+    if (this.uricAcidDialogController) {
+      const currentState: PromptActionCommonState = this.uricAcidDialogController.getState();
+      if (currentState === 3) {
+        this.showUricAcidDialog()
+      }
+    }
+    if (this.bloodPressDialogController) {
+      const currentState: PromptActionCommonState = this.bloodPressDialogController.getState();
+      if (currentState === 3) {
+        this.showBloodPressureDialog()
+      }
+    }
+    if (this.bloodLipidDialogController) {
+      const currentState: PromptActionCommonState = this.bloodLipidDialogController.getState();
+      if (currentState === 3) {
+        this.showBloodLipidDialog()
+      }
+    }
+  }
+
   async aboutToAppear(): Promise<void> {
     this.getUIContext().setKeyboardAvoidMode(KeyboardAvoidMode.RESIZE);
+
+    // 获取默认 display 对象
+    try {
+      const defaultDisplay = display.getDefaultDisplaySync();
+      defaultDisplay.on('availableAreaChange', () => {
+        const displayWidth = defaultDisplay.width;   // 屏幕宽度
+        const displayHeight = defaultDisplay.height; // 屏幕高度
+        this.updateWindowSizeChange(displayWidth, displayHeight)
+      });
+    } catch (error) {
+      // TODO: Implement error handling.
+    }
+
+
     this.quickTools = [
       {
         name: $r('app.media.weight'),
@@ -410,7 +520,11 @@ export struct HealthOverview {
   }
 
   private showBaseInputDialog() {
-    const dialogController: CustomDialogController = new CustomDialogController({
+    if (this.baseDialogController) {
+      this.baseDialogController.close()
+      this.baseDialogController = undefined
+    }
+    this.baseDialogController = new CustomDialogController({
       builder: BaseInputDialog({
         nickname: this.userInfoVM!.nickname,
         gender: this.userInfoVM!.gender,
@@ -423,16 +537,20 @@ export struct HealthOverview {
         }
       }),
       customStyle: true, // 关键参数：允许自定义样式
-      alignment: DialogAlignment.Bottom,
+      alignment: this.dialogAlignment,
       offset: { dx: 0, dy: 0 },
       maskColor: ColorConstants.View_Mask,
       autoCancel: false,
     })
-    dialogController.open()
+    this.baseDialogController.open()
   }
 
   private showWeightDialog() {
-    const dialogController: CustomDialogController = new CustomDialogController({
+    if (this.weightDialogController) {
+      this.weightDialogController.close()
+      this.weightDialogController = undefined
+    }
+    this.weightDialogController = new CustomDialogController({
       builder: WeightInputDialog({
         weightKg: this.weightDataVM!.value,
         onSubmit: (res) => {
@@ -442,18 +560,22 @@ export struct HealthOverview {
         }
       }),
       customStyle: true, // 关键参数：允许自定义样式
-      alignment: DialogAlignment.Bottom,
+      alignment: this.dialogAlignment,
       offset: { dx: 0, dy: 0 },
       maskColor: ColorConstants.View_Mask,
       autoCancel: false,
     })
-    dialogController.open()
+    this.weightDialogController.open()
   }
 
   private showBloodSugarDialog() {
-    const dialogController: CustomDialogController = new CustomDialogController({
+    if (this.bloodSugarDialogController) {
+      this.bloodSugarDialogController.close()
+      this.bloodSugarDialogController = undefined
+    }
+    this.bloodSugarDialogController = new CustomDialogController({
       builder: BloodSugarInputDialog({
-        bloodSugarValue:this.bloodSugarVM!.value,
+        bloodSugarValue: this.bloodSugarVM!.value,
         onSubmit: (res) => {
           if (res) {
             this.updateBloodSugar(res)
@@ -461,19 +583,23 @@ export struct HealthOverview {
         }
       }),
       customStyle: true, // 关键参数：允许自定义样式
-      alignment: DialogAlignment.Bottom,
+      alignment: this.dialogAlignment,
       offset: { dx: 0, dy: 0 },
       maskColor: ColorConstants.View_Mask,
       autoCancel: false,
     })
-    dialogController.open()
+    this.bloodSugarDialogController.open()
   }
 
   private showUricAcidDialog() {
-    const dialogController: CustomDialogController = new CustomDialogController({
+    if (this.uricAcidDialogController) {
+      this.uricAcidDialogController.close()
+      this.uricAcidDialogController = undefined
+    }
+    this.uricAcidDialogController = new CustomDialogController({
       builder: UricAcidInputDialog({
-        inputValue:this.uricAcidVM!.value,
-        gender:this.userInfoVM!.gender,
+        inputValue: this.uricAcidVM!.value,
+        gender: this.userInfoVM!.gender,
         onSubmit: (res) => {
           if (res) {
             this.updateUricAcid(res)
@@ -481,19 +607,23 @@ export struct HealthOverview {
         }
       }),
       customStyle: true, // 关键参数：允许自定义样式
-      alignment: DialogAlignment.Bottom,
+      alignment: this.dialogAlignment,
       offset: { dx: 0, dy: 0 },
       maskColor: ColorConstants.View_Mask,
       autoCancel: false,
     })
-    dialogController.open()
+    this.uricAcidDialogController.open()
   }
 
   private showBloodPressureDialog() {
-    const dialogController: CustomDialogController = new CustomDialogController({
+    if (this.bloodPressDialogController) {
+      this.bloodPressDialogController.close()
+      this.bloodPressDialogController = undefined
+    }
+    this.bloodPressDialogController = new CustomDialogController({
       builder: BloodPressureInputDialog({
-        systolicValue:this.bloodPressVM!.systolic,
-        diastolicValue:this.bloodPressVM!.diastolic,
+        systolicValue: this.bloodPressVM!.systolic,
+        diastolicValue: this.bloodPressVM!.diastolic,
         onSubmit: (res) => {
           if (res) {
             this.updateBloodPressure(res)
@@ -501,21 +631,25 @@ export struct HealthOverview {
         }
       }),
       customStyle: true, // 关键参数：允许自定义样式
-      alignment: DialogAlignment.Bottom,
+      alignment: this.dialogAlignment,
       offset: { dx: 0, dy: 0 },
       maskColor: ColorConstants.View_Mask,
       autoCancel: false,
     })
-    dialogController.open()
+    this.bloodPressDialogController.open()
   }
 
   private showBloodLipidDialog() {
-    const dialogController: CustomDialogController = new CustomDialogController({
+    if (this.bloodLipidDialogController) {
+      this.bloodLipidDialogController.close()
+      this.bloodLipidDialogController = undefined
+    }
+    this.bloodLipidDialogController = new CustomDialogController({
       builder: BloodLipidInputDialog({
-        totalCholesterol:this.bloodLipidVM!.totalCholesterol,
-        triglycerides:this.bloodLipidVM!.triglycerides,
-        hdlCholesterol:this.bloodLipidVM!.hdlCholesterol,
-        ldlCholesterol:this.bloodLipidVM!.ldlCholesterol,
+        totalCholesterol: this.bloodLipidVM!.totalCholesterol,
+        triglycerides: this.bloodLipidVM!.triglycerides,
+        hdlCholesterol: this.bloodLipidVM!.hdlCholesterol,
+        ldlCholesterol: this.bloodLipidVM!.ldlCholesterol,
         onSubmit: (res) => {
           if (res) {
             this.updateBloodLipid(res)
@@ -523,14 +657,13 @@ export struct HealthOverview {
         }
       }),
       customStyle: true, // 关键参数：允许自定义样式
-      alignment: DialogAlignment.Bottom,
+      alignment: this.dialogAlignment,
       offset: { dx: 0, dy: 0 },
       maskColor: ColorConstants.View_Mask,
       autoCancel: false,
     })
-    dialogController.open()
+    this.bloodLipidDialogController.open()
   }
-
 
   build() {
     RelativeContainer() {
@@ -544,13 +677,13 @@ export struct HealthOverview {
               nAge: this.userInfoVM?.age,
               nGender: this.userInfoVM?.gender,
               nHeight: this.userInfoVM?.heightCm,
-              handleClick: (type: HealthCardDataType) => {
+              handleClick: () => {
                 this.showBaseInputDialog()
               }
             })
             // 健康指标网格
             Grid() {
-              ForEach(this.getHealthCardData(), (cardData: HealthCardData, index: number) => {
+              ForEach(this.getHealthCardData(), (cardData: HealthCardData, _: number) => {
                 GridItem() {
                   HealthInfoCard({
                     data: cardData,
@@ -578,7 +711,7 @@ export struct HealthOverview {
                             this.showBloodLipidDialog()
                             break
                           }
-                          default :{
+                          default: {
                             break
                           }
                         }
@@ -646,27 +779,8 @@ export struct HealthOverview {
             .scrollBar(BarState.Off)
             .onSizeChange((_: SizeOptions, newValue: SizeOptions) => {
               const curWidth = newValue.width
-              if (curWidth == undefined) {
-                return
-              }
-              // https://developer.huawei.com/consumer/cn/doc/design-guides/design-layout-basics-0000001795579413#section6149141345712
-              // P60: 374x826
-              // X5: 346x802 / 712x798
-              // PuraX: 326x326 / 440x706
-              // MatePad: 1280x800
-              if (curWidth > 1000) {
-                this.columnsTemplate = '1fr 1fr 1fr 1fr'
-                this.dashBoardStyle = MDashBoardStyle.DashBoardBig
-              } else if (curWidth > 600) {
-                this.columnsTemplate = '1fr 1fr 1fr'
-                this.dashBoardStyle = MDashBoardStyle.DashBoardBig
-              } else if (curWidth > 350) {
-                this.columnsTemplate = '1fr 1fr'
-                this.dashBoardStyle = MDashBoardStyle.DashBoardNormal
-              } else {
-                this.columnsTemplate = '1fr 1fr'
-                this.dashBoardStyle = MDashBoardStyle.DashBoardSmall
-              }
+              const curHeight = newValue.height
+              this.updateWindowSizeChange(curWidth, curHeight)
             })
           }
         }
@@ -730,7 +844,7 @@ export struct HealthOverview {
           middle: { anchor: '__container__', align: HorizontalAlign.Center }
         })
 
-      ForEach(this.quickTools, (item: ToolItem, index) => {
+      ForEach(this.quickTools, (item: ToolItem, _) => {
         MIconButton({
           iconName: "",
           srcName: item.name,

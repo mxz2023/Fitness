@@ -117,11 +117,12 @@ export struct WeightInputDialog {
       })
     }
     .width('100%')
-    .height('100%')
+    .height(250)
     .constraintSize({
       maxWidth: 500
     })
     .padding(AppConstants.VIEW_PADDING)
     .borderRadius(AppConstants.VIEW_RADIUS)
+    .backgroundColor(ColorConstants.White)
   }
 }
